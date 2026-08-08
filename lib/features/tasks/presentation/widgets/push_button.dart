@@ -30,7 +30,8 @@ class _PushButtonState extends State<PushButton> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 60),
         transform: Matrix4.translationValues(0, _pressed ? 3 : 0, 0),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: const Color(0xFF5F8A1C)),

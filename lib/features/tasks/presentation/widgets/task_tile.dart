@@ -27,12 +27,12 @@ class TaskTile extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: task.done
-              ? const [Color(0xFF1E211A), Color(0xFF171A13)]
-              : const [Color(0xFF262A1F), Color(0xFF1C1F16)],
+              ? const [Color(0xFF17190F), Color(0xFF121409)]
+              : const [Color(0xFF1E2117), Color(0xFF15170F)],
         ),
         boxShadow: const [
           BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.45),
+            color: Color.fromRGBO(0, 0, 0, 0.5),
             offset: Offset(0, 2),
           ),
         ],
@@ -47,7 +47,7 @@ class TaskTile extends StatelessWidget {
               style: TextStyle(
                 fontFamily: AppFonts.mono,
                 fontSize: 21,
-                height: 1.2,
+                height: 1.1,
                 color: task.done ? AppColors.inkDim : AppColors.ink,
                 decoration:
                 task.done ? TextDecoration.lineThrough : TextDecoration.none,
@@ -88,13 +88,13 @@ class _Led extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: on ? AppColors.greenDark : const Color(0xFF454B38),
+            color: on ? AppColors.greenDark : const Color(0xFF3B402F),
           ),
           gradient: RadialGradient(
             center: const Alignment(-0.3, -0.4),
             colors: on
                 ? const [AppColors.greenLight, AppColors.greenDark]
-                : const [Color(0xFF3D4433), Color(0xFF22261C)],
+                : const [Color(0xFF343A2B), Color(0xFF1B1E15)],
           ),
           boxShadow: on
               ? const [BoxShadow(color: AppColors.glow, blurRadius: 13)]

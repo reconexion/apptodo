@@ -26,7 +26,7 @@ class PanelDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.glassEdge),
@@ -60,15 +60,14 @@ class PanelDisplay extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       pending.toString().padLeft(2, '0'),
                       style: const TextStyle(
                         fontFamily: AppFonts.mono,
-                        fontSize: 62,
-                        height: 0.9,
+                        fontSize: 56,
+                        height: 1.0,
                         color: AppColors.green,
                         shadows: [
                           Shadow(color: AppColors.glow, blurRadius: 14),
@@ -76,13 +75,15 @@ class PanelDisplay extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Flexible(
+                    Expanded(
                       child: Text(
                         _caption,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontFamily: AppFonts.mono,
-                          fontSize: 21,
+                          fontSize: 20,
+                          height: 1.0,
                           color: AppColors.greenLight,
                           shadows: [
                             Shadow(color: AppColors.glow, blurRadius: 10),
@@ -90,11 +91,11 @@ class PanelDisplay extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 3),
+                    const SizedBox(width: 4),
                     const _BlinkingCursor(),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
                 _Meter(progress: progress),
                 const SizedBox(height: 6),
                 Row(
@@ -117,6 +118,7 @@ class PanelDisplay extends StatelessWidget {
 const _tickStyle = TextStyle(
   fontFamily: AppFonts.mono,
   fontSize: 14,
+  height: 1.0,
   color: Color(0xFF6F8F3E),
 );
 
@@ -194,8 +196,8 @@ class _BlinkingCursorState extends State<_BlinkingCursor>
         child: child,
       ),
       child: Container(
-        width: 11,
-        height: 22,
+        width: 10,
+        height: 20,
         decoration: const BoxDecoration(
           color: AppColors.green,
           boxShadow: [BoxShadow(color: AppColors.glow, blurRadius: 10)],

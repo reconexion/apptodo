@@ -23,7 +23,7 @@ class TasksPage extends StatelessWidget {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 460),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                padding: const EdgeInsets.fromLTRB(18, 14, 18, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -31,16 +31,16 @@ class TasksPage extends StatelessWidget {
                       muted: vm.muted,
                       onToggleSound: vm.toggleMute,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
                     PanelDisplay(
                       pending: vm.pending,
                       doneCount: vm.doneCount,
                       total: vm.tasks.length,
                       progress: vm.progress,
                     ),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 14),
                     AddTaskRow(onSubmit: vm.add),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 16),
                     const Text(
                       'REGISTRO',
                       style: TextStyle(
@@ -93,19 +93,35 @@ class _EmptyState extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 34),
+        padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AppColors.edge),
         ),
-        child: const Text(
-          'sin registros - sistema en reposo',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: AppFonts.mono,
-            fontSize: 20,
-            color: Color(0xFF6B7554),
-          ),
+        child: const Column(
+          children: [
+            Text(
+              'sin registros',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: AppFonts.mono,
+                fontSize: 20,
+                height: 1.0,
+                color: Color(0xFF8FA070),
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              'sistema en reposo',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: AppFonts.mono,
+                fontSize: 16,
+                height: 1.0,
+                color: Color(0xFF5F6A4A),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -126,12 +142,10 @@ class _Footer extends StatelessWidget {
     );
 
     return const Padding(
-      padding: EdgeInsets.only(top: 12),
+      padding: EdgeInsets.only(top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('MOD. TD-01', style: style),
-          Text('OFFLINE', style: style),
         ],
       ),
     );
