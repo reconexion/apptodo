@@ -7,6 +7,8 @@ import '../widgets/add_task_row.dart';
 import '../widgets/chassis.dart';
 import '../widgets/panel_display.dart';
 import '../widgets/panel_plate.dart';
+import '../widgets/search_bar_row.dart';
+import '../widgets/settings_sheet.dart';
 import '../widgets/task_tile.dart';
 
 class TasksPage extends StatelessWidget {
@@ -15,6 +17,7 @@ class TasksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<TasksViewModel>();
+    final visible = vm.visibleTasks;
 
     return Scaffold(
       body: Chassis(
@@ -30,6 +33,7 @@ class TasksPage extends StatelessWidget {
                     PanelPlate(
                       muted: vm.muted,
                       onToggleSound: vm.toggleMute,
+                      onOpenSettings: () => showSettingsSheet(context, vm),
                     ),
                     const SizedBox(height: 10),
                     PanelDisplay(
@@ -40,30 +44,36 @@ class TasksPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
                     AddTaskRow(onSubmit: vm.add),
+                    const SizedBox(height: 10),
+                    SearchBarRow(
+                      onChanged: vm.search,
+                      onClear: vm.clearSearch,
+                    ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'REGISTRO',
-                      style: TextStyle(
-                        fontFamily: AppFonts.display,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 3.2,
-                        color: Color(0xFF6F7C56),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('REGISTRO', style: _labelStyle),
+                        if (vm.searching)
+                          Text(
+                            '${visible.length} DE ${vm.tasks.length}',
+                            style: _labelStyle,
+                          ),
+                      ],
                     ),
                     const SizedBox(height: 8),
                     Expanded(
                       child: vm.loading
                           ? const SizedBox.shrink()
-                          : vm.tasks.isEmpty
-                          ? const _EmptyState()
+                          : visible.isEmpty
+                          ? _EmptyState(searching: vm.searching)
                           : ListView.separated(
                         padding: const EdgeInsets.only(bottom: 8),
-                        itemCount: vm.tasks.length,
+                        itemCount: visible.length,
                         separatorBuilder: (_, __) =>
                         const SizedBox(height: 8),
                         itemBuilder: (context, index) {
-                          final task = vm.tasks[index];
+                          final task = visible[index];
                           return TaskTile(
                             task: task,
                             onToggle: () => vm.toggle(task.id),
@@ -84,8 +94,18 @@ class TasksPage extends StatelessWidget {
   }
 }
 
+const _labelStyle = TextStyle(
+  fontFamily: AppFonts.display,
+  fontSize: 9,
+  fontWeight: FontWeight.w800,
+  letterSpacing: 3.2,
+  color: Color(0xFF6F7C56),
+);
+
 class _EmptyState extends StatelessWidget {
-  const _EmptyState();
+  const _EmptyState({required this.searching});
+
+  final bool searching;
 
   @override
   Widget build(BuildContext context) {
@@ -98,23 +118,23 @@ class _EmptyState extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AppColors.edge),
         ),
-        child: const Column(
+        child: Column(
           children: [
             Text(
-              'sin registros',
+              searching ? 'sin coincidencias' : 'sin registros',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: AppFonts.mono,
                 fontSize: 20,
                 height: 1.0,
                 color: Color(0xFF8FA070),
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
-              'sistema en reposo',
+              searching ? 'prueba con otra palabra' : 'sistema en reposo',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: AppFonts.mono,
                 fontSize: 16,
                 height: 1.0,

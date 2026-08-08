@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 
-/// Franja superior: marca grabada, boton de sonido y lampara de encendido.
+/// Franja superior: marca grabada, controles y lampara de encendido.
 class PanelPlate extends StatelessWidget {
   const PanelPlate({
     super.key,
     required this.muted,
     required this.onToggleSound,
+    required this.onOpenSettings,
   });
 
   final bool muted;
   final VoidCallback onToggleSound;
+  final VoidCallback onOpenSettings;
 
   @override
   Widget build(BuildContext context) {
@@ -33,24 +35,26 @@ class PanelPlate extends StatelessWidget {
         ),
         Row(
           children: [
-            GestureDetector(
+            _PlateButton(
               onTap: onToggleSound,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.edge),
-                  borderRadius: BorderRadius.circular(6),
+              child: Text(
+                muted ? 'SND OFF' : 'SND ON',
+                style: TextStyle(
+                  fontFamily: AppFonts.display,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 2.2,
+                  color: muted ? AppColors.inkFaint : AppColors.engrave,
                 ),
-                child: Text(
-                  muted ? 'SND OFF' : 'SND ON',
-                  style: TextStyle(
-                    fontFamily: AppFonts.display,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 2.2,
-                    color: muted ? AppColors.inkFaint : AppColors.engrave,
-                  ),
-                ),
+              ),
+            ),
+            const SizedBox(width: 6),
+            _PlateButton(
+              onTap: onOpenSettings,
+              child: const Icon(
+                Icons.settings,
+                size: 14,
+                color: AppColors.engrave,
               ),
             ),
             const SizedBox(width: 10),
@@ -58,6 +62,31 @@ class PanelPlate extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _PlateButton extends StatelessWidget {
+  const _PlateButton({required this.child, required this.onTap});
+
+  final Widget child;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        height: 26,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 9),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.edge),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: child,
+      ),
     );
   }
 }
