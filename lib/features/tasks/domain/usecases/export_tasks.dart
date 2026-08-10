@@ -7,5 +7,8 @@ class ExportTasks {
   final TaskRepository _repository;
   final TaskBackupCodec _codec;
 
-  Future<String> call() async => _codec.encode(await _repository.getTasks());
+  Future<String> call() async {
+    final snapshot = await _repository.load();
+    return _codec.encode(snapshot.tabs, snapshot.tasks);
+  }
 }

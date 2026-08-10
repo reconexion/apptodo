@@ -18,24 +18,20 @@ class TaskTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.palette;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.edge),
+        border: Border.all(color: c.edge),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: task.done
-              ? const [Color(0xFF17190F), Color(0xFF121409)]
-              : const [Color(0xFF1E2117), Color(0xFF15170F)],
+              ? [c.tileDoneTop, c.tileDoneBottom]
+              : [c.tileTop, c.tileBottom],
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.5),
-            offset: Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -48,10 +44,10 @@ class TaskTile extends StatelessWidget {
                 fontFamily: AppFonts.mono,
                 fontSize: 21,
                 height: 1.1,
-                color: task.done ? AppColors.inkDim : AppColors.ink,
+                color: task.done ? c.inkDim : c.ink,
                 decoration:
                 task.done ? TextDecoration.lineThrough : TextDecoration.none,
-                decorationColor: AppColors.inkDim,
+                decorationColor: c.inkDim,
               ),
             ),
           ),
@@ -59,9 +55,9 @@ class TaskTile extends StatelessWidget {
           GestureDetector(
             onTap: onDelete,
             behavior: HitTestBehavior.opaque,
-            child: const Padding(
-              padding: EdgeInsets.all(4),
-              child: Icon(Icons.close, size: 18, color: AppColors.inkFaint),
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Icon(Icons.close, size: 18, color: c.inkFaint),
             ),
           ),
         ],
@@ -78,6 +74,8 @@ class _Led extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.palette;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -87,18 +85,15 @@ class _Led extends StatelessWidget {
         height: 24,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(
-            color: on ? AppColors.greenDark : const Color(0xFF3B402F),
-          ),
+          border: Border.all(color: on ? c.accentDark : c.ledOffBorder),
           gradient: RadialGradient(
             center: const Alignment(-0.3, -0.4),
             colors: on
-                ? const [AppColors.greenLight, AppColors.greenDark]
-                : const [Color(0xFF343A2B), Color(0xFF1B1E15)],
+                ? [c.accentLight, c.accentDark]
+                : [c.ledOffTop, c.ledOffBottom],
           ),
-          boxShadow: on
-              ? const [BoxShadow(color: AppColors.glow, blurRadius: 13)]
-              : const [],
+          boxShadow:
+          on ? [BoxShadow(color: c.glow, blurRadius: 13)] : const [],
         ),
       ),
     );

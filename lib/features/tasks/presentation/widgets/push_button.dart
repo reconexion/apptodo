@@ -22,6 +22,8 @@ class _PushButtonState extends State<PushButton> {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.palette;
+
     return GestureDetector(
       onTapDown: (_) => _setPressed(true),
       onTapUp: (_) => _setPressed(false),
@@ -34,32 +36,28 @@ class _PushButtonState extends State<PushButton> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: const Color(0xFF5F8A1C)),
-          gradient: const LinearGradient(
+          border: Border.all(color: c.accentDark),
+          gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              AppColors.greenLight,
-              AppColors.green,
-              Color(0xFF7FBB27),
-            ],
-            stops: [0.0, 0.45, 1.0],
+            colors: [c.accentLight, c.accent, c.accentDark],
+            stops: const [0.0, 0.45, 1.0],
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF45690F),
+              color: c.accentDark,
               offset: Offset(0, _pressed ? 1 : 4),
             ),
           ],
         ),
         child: Text(
           widget.label,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: AppFonts.display,
             fontSize: 12,
             fontWeight: FontWeight.w800,
             letterSpacing: 2,
-            color: Color(0xFF16210A),
+            color: c.onAccent,
           ),
         ),
       ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_theme.dart';
 
-/// Display de fosforo verde: contador, medidor de avance y marcas.
+/// Display: contador global, medidor de avance y marcas.
 class PanelDisplay extends StatelessWidget {
   const PanelDisplay({
     super.key,
@@ -25,15 +26,24 @@ class PanelDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.palette;
+
+    final tickStyle = TextStyle(
+      fontFamily: AppFonts.mono,
+      fontSize: 14,
+      height: 1.0,
+      color: c.displayTick,
+    );
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.glassEdge),
-        gradient: const LinearGradient(
+        border: Border.all(color: c.glassEdge),
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF10150C), AppColors.glass],
+          colors: [c.glassTop, c.glass],
         ),
       ),
       child: ClipRRect(
@@ -43,14 +53,11 @@ class PanelDisplay extends StatelessWidget {
             // Resplandor del tubo, mas fuerte abajo.
             Positioned.fill(
               child: DecoratedBox(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: RadialGradient(
-                    center: Alignment(0, 1.4),
+                    center: const Alignment(0, 1.4),
                     radius: 1.2,
-                    colors: [
-                      Color.fromRGBO(163, 230, 53, 0.18),
-                      Colors.transparent,
-                    ],
+                    colors: [c.halo, Colors.transparent],
                   ),
                 ),
               ),
@@ -64,14 +71,12 @@ class PanelDisplay extends StatelessWidget {
                   children: [
                     Text(
                       pending.toString().padLeft(2, '0'),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: AppFonts.mono,
                         fontSize: 56,
                         height: 1.0,
-                        color: AppColors.green,
-                        shadows: [
-                          Shadow(color: AppColors.glow, blurRadius: 14),
-                        ],
+                        color: c.displayInk,
+                        shadows: [Shadow(color: c.glow, blurRadius: 14)],
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -80,14 +85,12 @@ class PanelDisplay extends StatelessWidget {
                         _caption,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: AppFonts.mono,
                           fontSize: 20,
                           height: 1.0,
-                          color: AppColors.greenLight,
-                          shadows: [
-                            Shadow(color: AppColors.glow, blurRadius: 10),
-                          ],
+                          color: c.displayInkSoft,
+                          shadows: [Shadow(color: c.glow, blurRadius: 10)],
                         ),
                       ),
                     ),
@@ -96,14 +99,14 @@ class PanelDisplay extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                _Meter(progress: progress),
+                _Meter(progress: progress, palette: c),
                 const SizedBox(height: 6),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('0', style: _tickStyle),
-                    Text('$doneCount / $total hechas', style: _tickStyle),
-                    const Text('100', style: _tickStyle),
+                    Text('0', style: tickStyle),
+                    Text('$doneCount / $total hechas', style: tickStyle),
+                    Text('100', style: tickStyle),
                   ],
                 ),
               ],
@@ -115,25 +118,19 @@ class PanelDisplay extends StatelessWidget {
   }
 }
 
-const _tickStyle = TextStyle(
-  fontFamily: AppFonts.mono,
-  fontSize: 14,
-  height: 1.0,
-  color: Color(0xFF6F8F3E),
-);
-
 class _Meter extends StatelessWidget {
-  const _Meter({required this.progress});
+  const _Meter({required this.progress, required this.palette});
 
   final double progress;
+  final AppPalette palette;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 10,
       decoration: BoxDecoration(
-        color: const Color(0xFF060803),
-        border: Border.all(color: const Color(0xFF2C3323)),
+        color: palette.meterTrack,
+        border: Border.all(color: palette.meterTrackEdge),
         borderRadius: BorderRadius.circular(3),
       ),
       child: ClipRRect(
@@ -147,16 +144,16 @@ class _Meter extends StatelessWidget {
             builder: (context, value, _) => FractionallySizedBox(
               widthFactor: value,
               heightFactor: 1,
-              child: const DecoratedBox(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.greenDark,
-                      AppColors.green,
-                      AppColors.greenLight,
+                      palette.accentDark,
+                      palette.accent,
+                      palette.accentLight,
                     ],
                   ),
-                  boxShadow: [BoxShadow(color: AppColors.glow, blurRadius: 10)],
+                  boxShadow: [BoxShadow(color: palette.glow, blurRadius: 10)],
                 ),
               ),
             ),
@@ -189,6 +186,8 @@ class _BlinkingCursorState extends State<_BlinkingCursor>
 
   @override
   Widget build(BuildContext context) {
+    final c = context.palette;
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) => Opacity(
@@ -198,9 +197,9 @@ class _BlinkingCursorState extends State<_BlinkingCursor>
       child: Container(
         width: 10,
         height: 20,
-        decoration: const BoxDecoration(
-          color: AppColors.green,
-          boxShadow: [BoxShadow(color: AppColors.glow, blurRadius: 10)],
+        decoration: BoxDecoration(
+          color: c.displayInk,
+          boxShadow: [BoxShadow(color: c.glow, blurRadius: 10)],
         ),
       ),
     );

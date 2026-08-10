@@ -1,13 +1,16 @@
 import '../entities/task.dart';
+import '../entities/task_snapshot.dart';
+import '../entities/task_tab.dart';
 
-/// Convierte la lista a texto plano y de regreso.
-/// El formato es una checklist legible: [x] hecha, [ ] pendiente.
+/// Convierte todo a texto plano y de regreso.
+/// Formato: "## NOMBRE" abre una pestana, [x] hecha, [ ] pendiente.
 class TaskBackupCodec {
   const TaskBackupCodec();
 
-  static final RegExp _line = RegExp(r'^\s*\[\s*([xX ])\s*\]\s*(.+)$');
+  static final RegExp _taskLine = RegExp(r'^\s*\[\s*([xX ])\s*\]\s*(.+)$');
+  static final RegExp _tabLine = RegExp(r'^\s*##\s*(.+)$');
 
-  String encode(List<Task> tasks, {DateTime? at}) {
+  String encode(List<TaskTab> tabs, List<Task> tasks, {DateTime? at}) {
     final now = at ?? DateTime.now();
     final done = tasks.where((t) => t.done).length;
 
@@ -17,38 +20,64 @@ class TaskBackupCodec {
       ..writeln('# $done de ${tasks.length} hechas')
       ..writeln();
 
-    for (final t in tasks) {
-      buffer.writeln('${t.done ? '[x]' : '[ ]'} ${t.text}');
+    for (final tab in tabs) {
+      buffer.writeln('## ${tab.name}');
+      for (final t in tasks.where((t) => t.tabId == tab.id)) {
+        buffer.writeln('${t.done ? '[x]' : '[ ]'} ${t.text}');
+      }
+      buffer.writeln();
     }
     return buffer.toString().trimRight();
   }
 
-  /// Lanza [FormatException] si no encuentra ninguna tarea valida.
-  List<Task> decode(String raw) {
+  /// Lanza [FormatException] si no encuentra nada aprovechable.
+  TaskSnapshot decode(String raw) {
+    final tabs = <TaskTab>[];
     final tasks = <Task>[];
-    var id = 0;
+    var tabId = 0;
+    var taskId = 0;
+
+    void ensureTab() {
+      if (tabs.isEmpty) tabs.add(TaskTab(id: ++tabId, name: 'GENERAL'));
+    }
 
     for (final rawLine in raw.split('\n')) {
       final line = rawLine.trim();
-      if (line.isEmpty || line.startsWith('#')) continue;
+      if (line.isEmpty) continue;
 
-      final match = _line.firstMatch(line);
-      if (match != null) {
-        final marked = match.group(1)!.toLowerCase() == 'x';
-        final text = match.group(2)!.trim();
+      final tabMatch = _tabLine.firstMatch(line);
+      if (tabMatch != null) {
+        final name = tabMatch.group(1)!.trim();
+        if (name.isNotEmpty) tabs.add(TaskTab(id: ++tabId, name: name));
+        continue;
+      }
+
+      // Comentarios de cabecera.
+      if (line.startsWith('#')) continue;
+
+      final taskMatch = _taskLine.firstMatch(line);
+      if (taskMatch != null) {
+        final text = taskMatch.group(2)!.trim();
         if (text.isEmpty) continue;
-        tasks.add(Task(id: ++id, text: text, done: marked));
+        ensureTab();
+        tasks.add(Task(
+          id: ++taskId,
+          text: text,
+          tabId: tabs.last.id,
+          done: taskMatch.group(1)!.toLowerCase() == 'x',
+        ));
         continue;
       }
 
       // Linea suelta sin corchetes: se toma como pendiente.
-      tasks.add(Task(id: ++id, text: line, done: false));
+      ensureTab();
+      tasks.add(Task(id: ++taskId, text: line, tabId: tabs.last.id));
     }
 
-    if (tasks.isEmpty) {
+    if (tabs.isEmpty) {
       throw const FormatException('No se encontraron tareas en el texto.');
     }
-    return tasks;
+    return TaskSnapshot(tabs: tabs, tasks: tasks);
   }
 
   String _stamp(DateTime d) {

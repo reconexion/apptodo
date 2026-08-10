@@ -1,4 +1,4 @@
-import '../entities/task.dart';
+import '../entities/task_snapshot.dart';
 import '../repositories/task_repository.dart';
 
 class AddTask {
@@ -6,9 +6,9 @@ class AddTask {
   final TaskRepository _repository;
 
   /// Ignora texto vacio: regla de negocio, no de UI.
-  Future<List<Task>> call(String text) {
+  Future<TaskSnapshot> call(String text, int tabId) {
     final clean = text.trim();
-    if (clean.isEmpty) return _repository.getTasks();
-    return _repository.addTask(clean);
+    if (clean.isEmpty) return _repository.load();
+    return _repository.addTask(clean, tabId);
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_theme.dart';
 
-/// Carcasa del aparato: degradado, grano de escaneo y tornillos en las esquinas.
+/// Carcasa del aparato: degradado, grano de escaneo y tornillos.
 class Chassis extends StatelessWidget {
   const Chassis({super.key, required this.child});
 
@@ -10,24 +11,26 @@ class Chassis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.palette;
+
     return DecoratedBox(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.panelLight, AppColors.panel, AppColors.panelDark],
-          stops: [0.0, 0.38, 1.0],
+          colors: [c.panelLight, c.panel, c.panelDark],
+          stops: const [0.0, 0.38, 1.0],
         ),
       ),
       child: CustomPaint(
-        foregroundPainter: _ScanlinePainter(),
+        foregroundPainter: _ScanlinePainter(c.scanline),
         child: Stack(
           children: [
             Positioned.fill(child: child),
-            const _Screw(top: 14, left: 14),
-            const _Screw(top: 14, right: 14),
-            const _Screw(bottom: 14, left: 14),
-            const _Screw(bottom: 14, right: 14),
+            _Screw(palette: c, top: 14, left: 14),
+            _Screw(palette: c, top: 14, right: 14),
+            _Screw(palette: c, bottom: 14, left: 14),
+            _Screw(palette: c, bottom: 14, right: 14),
           ],
         ),
       ),
@@ -36,22 +39,33 @@ class Chassis extends StatelessWidget {
 }
 
 class _ScanlinePainter extends CustomPainter {
-  final Paint _paint = Paint()..color = const Color.fromRGBO(0, 0, 0, 0.13);
+  _ScanlinePainter(this.color);
+
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color;
     for (var y = 0.0; y < size.height; y += 3) {
-      canvas.drawRect(Rect.fromLTWH(0, y, size.width, 1), _paint);
+      canvas.drawRect(Rect.fromLTWH(0, y, size.width, 1), paint);
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _ScanlinePainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 class _Screw extends StatelessWidget {
-  const _Screw({this.top, this.left, this.right, this.bottom});
+  const _Screw({
+    required this.palette,
+    this.top,
+    this.left,
+    this.right,
+    this.bottom,
+  });
 
+  final AppPalette palette;
   final double? top;
   final double? left;
   final double? right;
@@ -67,21 +81,17 @@ class _Screw extends StatelessWidget {
       child: Container(
         width: 12,
         height: 12,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            center: Alignment(-0.3, -0.4),
-            colors: [Color(0xFF6A7159), Color(0xFF22261C)],
+            center: const Alignment(-0.3, -0.4),
+            colors: [palette.screwLight, palette.screwDark],
           ),
         ),
         child: Center(
           child: Transform.rotate(
             angle: 0.5,
-            child: Container(
-              width: 8,
-              height: 1.5,
-              color: const Color(0xFF0A0C08),
-            ),
+            child: Container(width: 8, height: 1.5, color: palette.screwSlot),
           ),
         ),
       ),

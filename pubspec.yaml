@@ -38,10 +38,17 @@ flutter:
           weight: 800
 
 
+
 flutter_launcher_icons:
-  android: true
+  android: "ic_launcher"
   ios: true
-  image_path: "assets/icon/icon.png"
-  adaptive_icon_background: "#121410"
-  adaptive_icon_foreground: "assets/icon/icon.png"
-  remove_alpha_ios: true
+  image_path: "assets/icon/icon_amber.png"
+  adaptive_icon_background: "#101012"
+  adaptive_icon_foreground: "assets/icon/icon_amber.png"
+
+  nes:
+    android: "ic_launcher_nes"
+    ios: false
+    image_path: "assets/icon/icon_nes.png"
+    adaptive_icon_background: "#E7E3CE"
+    adaptive_icon_foreground: "assets/icon/icon_nes.png"

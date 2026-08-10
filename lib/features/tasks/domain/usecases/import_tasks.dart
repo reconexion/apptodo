@@ -1,4 +1,4 @@
-import '../entities/task.dart';
+import '../entities/task_snapshot.dart';
 import '../repositories/task_repository.dart';
 import '../services/task_backup_codec.dart';
 
@@ -8,9 +8,9 @@ class ImportTasks {
   final TaskRepository _repository;
   final TaskBackupCodec _codec;
 
-  /// Reemplaza todo lo que haya. Lanza [FormatException] si el texto no sirve.
-  Future<List<Task>> call(String raw) {
-    final tasks = _codec.decode(raw);
-    return _repository.replaceAll(tasks);
+  /// Reemplaza todo. Lanza [FormatException] si el texto no sirve.
+  Future<TaskSnapshot> call(String raw) {
+    final backup = _codec.decode(raw);
+    return _repository.replaceAll(backup.tabs, backup.tasks);
   }
 }

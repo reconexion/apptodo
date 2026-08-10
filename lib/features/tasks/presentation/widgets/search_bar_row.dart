@@ -44,10 +44,12 @@ class _SearchBarRowState extends State<SearchBarRow> {
 
   @override
   Widget build(BuildContext context) {
-    const textStyle = TextStyle(
+    final c = context.palette;
+
+    final textStyle = TextStyle(
       fontFamily: AppFonts.mono,
       fontSize: 18,
-      color: AppColors.ink,
+      color: c.ink,
     );
 
     return SizedBox(
@@ -56,22 +58,18 @@ class _SearchBarRowState extends State<SearchBarRow> {
         controller: _controller,
         onChanged: widget.onChanged,
         style: textStyle,
-        cursorColor: AppColors.green,
+        cursorColor: c.accent,
         textInputAction: TextInputAction.search,
         maxLines: 1,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
           hintText: 'buscar...',
-          hintStyle: textStyle.copyWith(color: const Color(0xFF5B6448)),
+          hintStyle: textStyle.copyWith(color: c.inkFaint),
           isDense: true,
           filled: true,
-          fillColor: const Color(0xFF0F110A),
+          fillColor: c.fieldDeep,
           contentPadding: EdgeInsets.zero,
-          prefixIcon: const Icon(
-            Icons.search,
-            size: 18,
-            color: Color(0xFF6C7A52),
-          ),
+          prefixIcon: Icon(Icons.search, size: 18, color: c.inkFaint),
           prefixIconConstraints: const BoxConstraints(
             minWidth: 38,
             minHeight: 38,
@@ -80,11 +78,7 @@ class _SearchBarRowState extends State<SearchBarRow> {
               ? GestureDetector(
             onTap: _clear,
             behavior: HitTestBehavior.opaque,
-            child: const Icon(
-              Icons.close,
-              size: 16,
-              color: AppColors.inkFaint,
-            ),
+            child: Icon(Icons.close, size: 16, color: c.inkFaint),
           )
               : null,
           suffixIconConstraints: const BoxConstraints(
@@ -93,11 +87,11 @@ class _SearchBarRowState extends State<SearchBarRow> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(9),
-            borderSide: const BorderSide(color: Color(0xFF262B1D)),
+            borderSide: BorderSide(color: c.edge),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(9),
-            borderSide: const BorderSide(color: AppColors.greenDark),
+            borderSide: BorderSide(color: c.accentDark),
           ),
         ),
       ),

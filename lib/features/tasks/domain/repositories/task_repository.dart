@@ -1,12 +1,21 @@
 import '../entities/task.dart';
+import '../entities/task_snapshot.dart';
+import '../entities/task_tab.dart';
 
 /// Contrato del dominio. La capa de datos decide como cumplirlo.
 abstract class TaskRepository {
-  Future<List<Task>> getTasks();
-  Future<List<Task>> addTask(String text);
-  Future<List<Task>> toggleTask(int id);
-  Future<List<Task>> deleteTask(int id);
+  Future<TaskSnapshot> load();
 
-  /// Reemplaza toda la lista. Lo usa la importacion de respaldos.
-  Future<List<Task>> replaceAll(List<Task> tasks);
+  Future<TaskSnapshot> addTask(String text, int tabId);
+  Future<TaskSnapshot> toggleTask(int id);
+  Future<TaskSnapshot> deleteTask(int id);
+
+  Future<TaskSnapshot> addTab(String name);
+  Future<TaskSnapshot> renameTab(int id, String name);
+
+  /// No borra la ultima pestana que quede.
+  Future<TaskSnapshot> deleteTab(int id);
+
+  /// Reemplaza todo. Lo usa la importacion de respaldos.
+  Future<TaskSnapshot> replaceAll(List<TaskTab> tabs, List<Task> tasks);
 }

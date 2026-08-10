@@ -31,10 +31,12 @@ class _AddTaskRowState extends State<AddTaskRow> {
 
   @override
   Widget build(BuildContext context) {
-    const textStyle = TextStyle(
+    final c = context.palette;
+
+    final textStyle = TextStyle(
       fontFamily: AppFonts.mono,
       fontSize: 20,
-      color: AppColors.ink,
+      color: c.ink,
     );
 
     return SizedBox(
@@ -46,25 +48,25 @@ class _AddTaskRowState extends State<AddTaskRow> {
             child: TextField(
               controller: _controller,
               style: textStyle,
-              cursorColor: AppColors.green,
+              cursorColor: c.accent,
               textInputAction: TextInputAction.done,
               onSubmitted: (_) => _submit(),
               maxLines: 1,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 hintText: 'nueva tarea...',
-                hintStyle: textStyle.copyWith(color: const Color(0xFF6B7554)),
+                hintStyle: textStyle.copyWith(color: c.inkFaint),
                 isDense: true,
                 filled: true,
-                fillColor: const Color(0xFF171A11),
+                fillColor: c.field,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 14),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: AppColors.edge),
+                  borderSide: BorderSide(color: c.edge),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: AppColors.greenDark),
+                  borderSide: BorderSide(color: c.accentDark),
                 ),
               ),
             ),

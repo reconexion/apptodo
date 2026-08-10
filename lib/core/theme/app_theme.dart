@@ -1,31 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-/// Paleta del aparato: carcasa verde-carbon, display de fosforo verde.
-class AppColors {
-  const AppColors._();
-
-  static const panelLight = Color(0xFF22251C);
-  static const panel = Color(0xFF1A1C15);
-  static const panelDark = Color(0xFF0C0E0A);
-  static const edge = Color(0xFF2F3427);
-  static const engrave = Color(0xFF7D8C61);
-
-  static const ink = Color(0xFFD5E0C2);
-  static const inkDim = Color(0xFF5E6850);
-  static const inkFaint = Color(0xFF525C40);
-
-  static const glass = Color(0xFF050703);
-  static const glassEdge = Color(0xFF272C1E);
-
-  static const green = Color(0xFFA3E635);
-  static const greenLight = Color(0xFFD6F88A);
-  static const greenDark = Color(0xFF5F9226);
-
-  static const danger = Color(0xFFD0604F);
-
-  /// Glow verde reutilizable.
-  static const glow = Color.fromRGBO(163, 230, 53, 0.75);
-}
+import 'app_palette.dart';
+import 'theme_controller.dart';
 
 class AppFonts {
   const AppFonts._();
@@ -37,21 +14,37 @@ class AppFonts {
   static const display = 'Archivo';
 }
 
+/// Atajo: `context.palette` en cualquier widget bajo el provider.
+extension PaletteContext on BuildContext {
+  AppPalette get palette => watch<ThemeController>().palette;
+}
+
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData get dark => ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.panelDark,
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.green,
-      onPrimary: Color(0xFF16210A),
-      surface: AppColors.panel,
-      onSurface: AppColors.ink,
-      error: AppColors.danger,
-    ),
-    splashFactory: NoSplash.splashFactory,
-    highlightColor: Colors.transparent,
-  );
+  static ThemeData from(AppPalette p) {
+    final base = p.brightness == Brightness.dark
+        ? const ColorScheme.dark()
+        : const ColorScheme.light();
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: p.brightness,
+      scaffoldBackgroundColor: p.panelDark,
+      colorScheme: base.copyWith(
+        primary: p.accent,
+        onPrimary: p.onAccent,
+        surface: p.panel,
+        onSurface: p.ink,
+        error: p.danger,
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: p.accent,
+        selectionHandleColor: p.accent,
+        selectionColor: p.accentDark,
+      ),
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
+    );
+  }
 }
