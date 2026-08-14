@@ -8,9 +8,13 @@ class ImportTasks {
   final TaskRepository _repository;
   final TaskBackupCodec _codec;
 
-  /// Reemplaza todo. Lanza [FormatException] si el texto no sirve.
-  Future<TaskSnapshot> call(String raw) {
+
+  Future<TaskSnapshot> call(String raw, {required int intoTabId}) {
     final backup = _codec.decode(raw);
-    return _repository.replaceAll(backup.tabs, backup.tasks);
+    return _repository.mergeBackup(
+      incomingTabs: backup.tabs,
+      incomingTasks: backup.tasks,
+      intoTabId: intoTabId,
+    );
   }
 }

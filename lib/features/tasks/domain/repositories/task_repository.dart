@@ -10,12 +10,23 @@ abstract class TaskRepository {
   Future<TaskSnapshot> toggleTask(int id);
   Future<TaskSnapshot> deleteTask(int id);
 
+  /// Cambia la tarea de pestana. No hace nada si el id no existe.
+  Future<TaskSnapshot> moveTask(int taskId, int toTabId);
+
   Future<TaskSnapshot> addTab(String name);
   Future<TaskSnapshot> renameTab(int id, String name);
 
-  /// No borra la ultima pestana que quede.
+  /// Puede dejar 0 pestanas: es un estado valido.
   Future<TaskSnapshot> deleteTab(int id);
 
-  /// Reemplaza todo. Lo usa la importacion de respaldos.
   Future<TaskSnapshot> replaceAll(List<TaskTab> tabs, List<Task> tasks);
+
+  /// Agrega tareas sin borrar nada existente.
+  /// Si [incomingTabs] no esta vacio, cada nombre se resuelve contra una
+  /// pestana existente o se crea. Si esta vacio, todo entra en [intoTabId].
+  Future<TaskSnapshot> mergeBackup({
+    required List<TaskTab> incomingTabs,
+    required List<Task> incomingTasks,
+    required int intoTabId,
+  });
 }

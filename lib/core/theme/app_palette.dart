@@ -108,7 +108,7 @@ class AppPalette {
 class AppPalettes {
   const AppPalettes._();
 
-  /// Verde sobre crema, tipo consola de 8 bits.
+  /// Verde sobre crema, tipo consola de 8 bits. Tema por defecto.
   static const nes = AppPalette(
     id: 'nes',
     label: 'NES',
@@ -151,6 +151,51 @@ class AppPalettes {
     screwLight: Color(0xFFE9E5D2),
     screwDark: Color(0xFFA9A385),
     screwSlot: Color(0xFF7C7660),
+  );
+
+  /// Azul sobre crema, misma familia que NES pero en frio.
+  static const nesBlue = AppPalette(
+    id: 'nes_blue',
+    label: 'NES AZUL',
+    brightness: Brightness.light,
+    panelLight: Color(0xFFEEF2F6),
+    panel: Color(0xFFDCE4EC),
+    panelDark: Color(0xFFC5D0DC),
+    edge: Color(0xFF9DAEBE),
+    engrave: Color(0xFF52708C),
+    ink: Color(0xFF17263A),
+    inkDim: Color(0xFF556C82),
+    inkFaint: Color(0xFF7C90A3),
+    field: Color(0xFFF7FAFC),
+    fieldDeep: Color(0xFFECF1F5),
+    glassTop: Color(0xFF3E7FB8),
+    glass: Color(0xFF2E6699),
+    glassEdge: Color(0xFF204C77),
+    displayInk: Color(0xFF0D2338),
+    displayInkSoft: Color(0xFF1B3B57),
+    displayTick: Color(0xFF2A567B),
+    glow: Color.fromRGBO(13, 35, 56, 0.22),
+    halo: Color.fromRGBO(255, 255, 255, 0.22),
+    meterTrack: Color(0xFF285F8C),
+    meterTrackEdge: Color(0xFF1D496D),
+    accent: Color(0xFF2C6FA3),
+    accentLight: Color(0xFF4E92C6),
+    accentDark: Color(0xFF1B486B),
+    onAccent: Color(0xFFEEF2F6),
+    tileTop: Color(0xFFF7FAFC),
+    tileBottom: Color(0xFFE7EDF3),
+    tileDoneTop: Color(0xFFE1E8EF),
+    tileDoneBottom: Color(0xFFD3DCE4),
+    ledOffTop: Color(0xFFCBD6E0),
+    ledOffBottom: Color(0xFFAEBECD),
+    ledOffBorder: Color(0xFF95A7B9),
+    chipActive: Color(0xFFCEE0EF),
+    chipIdle: Color(0xFFE7EDF3),
+    scanline: Color.fromRGBO(70, 90, 110, 0.10),
+    danger: Color(0xFFB5432F),
+    screwLight: Color(0xFFE3E9EF),
+    screwDark: Color(0xFF95A7B9),
+    screwSlot: Color(0xFF6C7F92),
   );
 
   /// Ambar sobre negro, tipo consola futurista.
@@ -198,12 +243,13 @@ class AppPalettes {
     screwSlot: Color(0xFF0C0C0E),
   );
 
-  static const all = <AppPalette>[amber, nes];
+  /// NES verde primero: es el tema por defecto.
+  static const all = <AppPalette>[nesBlue, nes, amber];
 
   static AppPalette byId(String? id) {
     for (final p in all) {
       if (p.id == id) return p;
     }
-    return amber;
+    return nesBlue;
   }
 }

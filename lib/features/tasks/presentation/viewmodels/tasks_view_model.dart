@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/audio/sfx_player.dart';
+import '../../../../core/kaomoji/kaomoji_set.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/entities/task_snapshot.dart';
 import '../../domain/entities/task_tab.dart';
@@ -11,7 +12,11 @@ import '../../domain/usecases/export_tasks.dart';
 import '../../domain/usecases/get_snapshot.dart';
 import '../../domain/usecases/import_tasks.dart';
 import '../../domain/usecases/manage_tabs.dart';
+import '../../domain/usecases/move_task.dart';
 import '../../domain/usecases/toggle_task.dart';
+
+/// Filtro especial: junta las tareas de todas las pestanas en una vista.
+const int kAllTabsId = -1;
 
 class TasksViewModel extends ChangeNotifier {
   TasksViewModel({
@@ -19,6 +24,7 @@ class TasksViewModel extends ChangeNotifier {
     required AddTask addTask,
     required ToggleTask toggleTask,
     required DeleteTask deleteTask,
+    required MoveTask moveTask,
     required AddTab addTab,
     required RenameTab renameTab,
     required DeleteTab deleteTab,
@@ -29,6 +35,7 @@ class TasksViewModel extends ChangeNotifier {
         _addTask = addTask,
         _toggleTask = toggleTask,
         _deleteTask = deleteTask,
+        _moveTask = moveTask,
         _addTab = addTab,
         _renameTab = renameTab,
         _deleteTab = deleteTab,
@@ -40,6 +47,7 @@ class TasksViewModel extends ChangeNotifier {
   final AddTask _addTask;
   final ToggleTask _toggleTask;
   final DeleteTask _deleteTask;
+  final MoveTask _moveTask;
   final AddTab _addTab;
   final RenameTab _renameTab;
   final DeleteTab _deleteTab;
@@ -49,29 +57,39 @@ class TasksViewModel extends ChangeNotifier {
 
   List<TaskTab> _tabs = const [];
   List<Task> _tasks = const [];
+
+  /// kAllTabsId, un id real, o 0 si no hay ninguna pestana.
   int _activeTabId = 0;
   bool _loading = true;
   bool _muted = false;
   String _query = '';
 
+  /// Se elige una vez al abrir la app y no cambia hasta que se reabra.
+  final String kaomoji = KaomojiSet.random();
+
   List<TaskTab> get tabs => _tabs;
   int get activeTabId => _activeTabId;
+  bool get hasTabs => _tabs.isNotEmpty;
+  bool get isAllSelected => _activeTabId == kAllTabsId;
 
   TaskTab? get activeTab {
+    if (isAllSelected) return null;
     for (final tab in _tabs) {
       if (tab.id == _activeTabId) return tab;
     }
-    return _tabs.isEmpty ? null : _tabs.first;
+    return null;
   }
 
   /// Todas las tareas de todas las pestanas.
   List<Task> get tasks => _tasks;
 
-  /// Solo las de la pestana activa.
-  List<Task> get tabTasks =>
-      _tasks.where((t) => t.tabId == _activeTabId).toList();
+  /// Las de la pestana activa, o todas si esta seleccionado "TODAS".
+  List<Task> get tabTasks {
+    if (isAllSelected) return _tasks;
+    return _tasks.where((t) => t.tabId == _activeTabId).toList();
+  }
 
-  /// Las de la pestana activa que ademas pasan la busqueda.
+  /// Las de arriba, filtradas ademas por busqueda.
   List<Task> get visibleTasks {
     final own = tabTasks;
     if (_query.isEmpty) return own;
@@ -84,20 +102,28 @@ class TasksViewModel extends ChangeNotifier {
   String get query => _query;
   bool get searching => _query.isNotEmpty;
 
+  /// Puedes escribir tareas si hay una pestana real seleccionada
+  /// (no aplica en "TODAS", porque no sabria a donde mandarlas).
+  bool get canAddTask => !isAllSelected && activeTab != null;
+
   // --- Contadores globales: no cambian al moverte de pestana. ---
   int get pending => _tasks.where((t) => !t.done).length;
   int get doneCount => _tasks.length - pending;
   double get progress => _tasks.isEmpty ? 0 : doneCount / _tasks.length;
 
-  /// Pendientes de una pestana, para el numerito del chip.
   int pendingIn(int tabId) =>
       _tasks.where((t) => t.tabId == tabId && !t.done).length;
 
   void _apply(TaskSnapshot snapshot) {
     _tabs = snapshot.tabs;
     _tasks = snapshot.tasks;
-    final exists = _tabs.any((t) => t.id == _activeTabId);
-    if (!exists) _activeTabId = _tabs.isEmpty ? 0 : _tabs.first.id;
+
+    if (_tabs.isEmpty) {
+      _activeTabId = 0;
+    } else if (_activeTabId != kAllTabsId &&
+        _tabs.every((t) => t.id != _activeTabId)) {
+      _activeTabId = _tabs.first.id;
+    }
     notifyListeners();
   }
 
@@ -108,7 +134,7 @@ class TasksViewModel extends ChangeNotifier {
   }
 
   Future<void> add(String text) async {
-    if (text.trim().isEmpty || _activeTabId == 0) return;
+    if (text.trim().isEmpty || !canAddTask) return;
     _apply(await _addTask(text, _activeTabId));
     _sfx.play(Sfx.add);
     HapticFeedback.selectionClick();
@@ -127,6 +153,12 @@ class TasksViewModel extends ChangeNotifier {
     HapticFeedback.mediumImpact();
   }
 
+  Future<void> moveTask(int taskId, int toTabId) async {
+    _apply(await _moveTask(taskId, toTabId));
+    _sfx.play(Sfx.done);
+    HapticFeedback.mediumImpact();
+  }
+
   void selectTab(int id) {
     if (_activeTabId == id) return;
     _activeTabId = id;
@@ -135,13 +167,19 @@ class TasksViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void selectAll() => selectTab(kAllTabsId);
+
   Future<void> createTab(String name) async {
     final before = _tabs.map((t) => t.id).toSet();
+    final wasEmpty = _tabs.isEmpty;
     _apply(await _addTab(name));
-    for (final tab in _tabs) {
-      if (!before.contains(tab.id)) {
-        _activeTabId = tab.id;
-        break;
+
+    if (wasEmpty) {
+      for (final tab in _tabs) {
+        if (!before.contains(tab.id)) {
+          _activeTabId = tab.id;
+          break;
+        }
       }
     }
     _sfx.play(Sfx.add);
@@ -177,18 +215,18 @@ class TasksViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Texto del respaldo, listo para copiar.
   Future<String> buildBackup() => _exportTasks();
 
-  /// Reemplaza todo con el contenido del respaldo.
-  /// Devuelve cuantas tareas quedaron. Lanza [FormatException] si no sirve.
   Future<int> restoreBackup(String raw) async {
-    _apply(await _importTasks(raw));
+    final target = activeTab;
+    if (target == null) return 0;
+    final before = _tasks.length;
+    _apply(await _importTasks(raw, intoTabId: target.id));
     _query = '';
     _sfx.play(Sfx.add);
     HapticFeedback.mediumImpact();
     notifyListeners();
-    return _tasks.length;
+    return _tasks.length - before;
   }
 
   @override

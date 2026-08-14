@@ -9,9 +9,6 @@ import '../models/task_tab_model.dart';
 class TaskRepositoryImpl implements TaskRepository {
   TaskRepositoryImpl(this._local);
 
-  static const _defaultTabId = 1;
-  static const _defaultTabName = 'GENERAL';
-
   final TaskLocalDataSource _local;
 
   List<TaskTabModel>? _tabsCache;
@@ -20,12 +17,11 @@ class TaskRepositoryImpl implements TaskRepository {
   Future<void> _ensureLoaded() async {
     if (_tabsCache != null && _tasksCache != null) return;
 
-    var tabs = await _local.readTabs();
-    // Primera vez, o datos de la version sin pestanas.
-    if (tabs.isEmpty) {
-      tabs = const [TaskTabModel(id: _defaultTabId, name: _defaultTabName)];
-    }
-    final tasks = await _local.readTasks(tabs.first.id);
+    final tabs = await _local.readTabs();
+    // fallbackTabId solo importa para respaldos viejos sin tabId; si no
+    // hay pestanas todavia, 0 es un valor seguro (no matchea nada real).
+    final fallback = tabs.isEmpty ? 0 : tabs.first.id;
+    final tasks = await _local.readTasks(fallback);
 
     _tabsCache = tabs;
     _tasksCache = tasks;
@@ -61,8 +57,8 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<TaskSnapshot> addTask(String text, int tabId) async {
     await _ensureLoaded();
+    if (_tabsCache!.every((t) => t.id != tabId)) return _snapshot;
     final id = _nextId(_tasksCache!.map((t) => t.id));
-    // Las nuevas van hasta arriba.
     return _commit(
       _tabsCache!,
       [TaskModel(id: id, text: text, tabId: tabId), ..._tasksCache!],
@@ -91,6 +87,19 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
+  Future<TaskSnapshot> moveTask(int taskId, int toTabId) async {
+    await _ensureLoaded();
+    if (_tabsCache!.every((t) => t.id != toTabId)) return _snapshot;
+    return _commit(_tabsCache!, [
+      for (final t in _tasksCache!)
+        if (t.id == taskId)
+          TaskModel(id: t.id, text: t.text, tabId: toTabId, done: t.done)
+        else
+          t,
+    ]);
+  }
+
+  @override
   Future<TaskSnapshot> addTab(String name) async {
     await _ensureLoaded();
     final id = _nextId(_tabsCache!.map((t) => t.id));
@@ -112,8 +121,7 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<TaskSnapshot> deleteTab(int id) async {
     await _ensureLoaded();
-    // Siempre debe quedar al menos una pestana.
-    if (_tabsCache!.length <= 1) return _snapshot;
+    // Ahora si se permite quedar en 0 pestanas.
     return _commit(
       _tabsCache!.where((tab) => tab.id != id).toList(),
       _tasksCache!.where((t) => t.tabId != id).toList(),
@@ -125,16 +133,66 @@ class TaskRepositoryImpl implements TaskRepository {
       List<TaskTab> tabs,
       List<Task> tasks,
       ) async {
-    final safeTabs = tabs.isEmpty
-        ? const [TaskTabModel(id: _defaultTabId, name: _defaultTabName)]
-        : tabs.map(TaskTabModel.fromEntity).toList();
-
-    // Se reasignan los ids de tarea para que no queden repetidos.
+    final safeTabs = tabs.map(TaskTabModel.fromEntity).toList();
     var id = 0;
     final safeTasks = [
       for (final t in tasks)
         TaskModel(id: ++id, text: t.text, tabId: t.tabId, done: t.done),
     ];
     return _commit(safeTabs, safeTasks);
+  }
+
+  @override
+  Future<TaskSnapshot> mergeBackup({
+    required List<TaskTab> incomingTabs,
+    required List<Task> incomingTasks,
+    required int intoTabId,
+  }) async {
+    await _ensureLoaded();
+
+    final tabs = [..._tabsCache!];
+    final tasks = [..._tasksCache!];
+    var nextTabId = _nextId(tabs.map((t) => t.id));
+    var nextTaskId = _nextId(tasks.map((t) => t.id));
+
+    if (incomingTabs.isEmpty) {
+      if (tabs.every((t) => t.id != intoTabId)) return _snapshot;
+      for (final t in incomingTasks) {
+        tasks.add(TaskModel(
+          id: nextTaskId++,
+          text: t.text,
+          tabId: intoTabId,
+          done: t.done,
+        ));
+      }
+      return _commit(tabs, tasks);
+    }
+
+    final resolvedTabId = <int, int>{};
+
+    for (final incoming in incomingTabs) {
+      final match = tabs.where(
+            (t) => t.name.toLowerCase() == incoming.name.toLowerCase(),
+      );
+      if (match.isNotEmpty) {
+        resolvedTabId[incoming.id] = match.first.id;
+      } else {
+        final newId = nextTabId++;
+        tabs.add(TaskTabModel(id: newId, name: incoming.name));
+        resolvedTabId[incoming.id] = newId;
+      }
+    }
+
+    for (final t in incomingTasks) {
+      final targetTab = resolvedTabId[t.tabId] ?? intoTabId;
+      tasks.add(TaskModel(
+        id: nextTaskId++,
+        text: t.text,
+        tabId: targetTab,
+        done: t.done,
+      ));
+    }
+
+    return _commit(tabs, tasks);
   }
 }

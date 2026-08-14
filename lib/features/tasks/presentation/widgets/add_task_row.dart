@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'push_button.dart';
 
@@ -32,6 +33,7 @@ class _AddTaskRowState extends State<AddTaskRow> {
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
+    final t = context.t;
 
     final textStyle = TextStyle(
       fontFamily: AppFonts.mono,
@@ -54,7 +56,7 @@ class _AddTaskRowState extends State<AddTaskRow> {
               maxLines: 1,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
-                hintText: 'nueva tarea...',
+                hintText: t.t('add_placeholder'),
                 hintStyle: textStyle.copyWith(color: c.inkFaint),
                 isDense: true,
                 filled: true,
@@ -72,7 +74,7 @@ class _AddTaskRowState extends State<AddTaskRow> {
             ),
           ),
           const SizedBox(width: 10),
-          PushButton(label: 'AÑADIR', onPressed: _submit),
+          PushButton(label: t.t('add_button'), onPressed: _submit),
         ],
       ),
     );

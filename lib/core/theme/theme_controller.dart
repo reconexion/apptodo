@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_palette.dart';
 
-/// Guarda y expone el tema elegido.
+/// Guarda y expone el tema elegido. NES verde es el default.
 class ThemeController extends ChangeNotifier {
   ThemeController(this._prefs)
       : _palette = AppPalettes.byId(_prefs.getString(_key));

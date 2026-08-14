@@ -4,63 +4,70 @@ import '../../../../core/theme/app_theme.dart';
 import '../../domain/entities/task.dart';
 
 /// Tira de tarea con su LED indicador.
+/// Mantener presionada abre el menu para moverla de pestana.
 class TaskTile extends StatelessWidget {
   const TaskTile({
     super.key,
     required this.task,
     required this.onToggle,
     required this.onDelete,
+    required this.onLongPress,
   });
 
   final Task task;
   final VoidCallback onToggle;
   final VoidCallback onDelete;
+  final VoidCallback onLongPress;
 
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: c.edge),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: task.done
-              ? [c.tileDoneTop, c.tileDoneBottom]
-              : [c.tileTop, c.tileBottom],
+    return GestureDetector(
+      onLongPress: onLongPress,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: c.edge),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: task.done
+                ? [c.tileDoneTop, c.tileDoneBottom]
+                : [c.tileTop, c.tileBottom],
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          _Led(on: task.done, onTap: onToggle),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              task.text,
-              style: TextStyle(
-                fontFamily: AppFonts.mono,
-                fontSize: 21,
-                height: 1.1,
-                color: task.done ? c.inkDim : c.ink,
-                decoration:
-                task.done ? TextDecoration.lineThrough : TextDecoration.none,
-                decorationColor: c.inkDim,
+        child: Row(
+          children: [
+            _Led(on: task.done, onTap: onToggle),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                task.text,
+                style: TextStyle(
+                  fontFamily: AppFonts.mono,
+                  fontSize: 21,
+                  height: 1.1,
+                  color: task.done ? c.inkDim : c.ink,
+                  decoration: task.done
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                  decorationColor: c.inkDim,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: onDelete,
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Icon(Icons.close, size: 18, color: c.inkFaint),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: onDelete,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(Icons.close, size: 18, color: c.inkFaint),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

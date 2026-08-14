@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/entities/task_tab.dart';
+import '../viewmodels/tasks_view_model.dart';
 
-/// Fila de pestanas con su contador de pendientes.
-/// Solo cambia de pestana: crear y borrar viven en configuracion.
+/// Fila de pestanas. "TODAS" queda fija a la izquierda y el resto
+/// se desplaza horizontalmente, para que muchas pestanas no rompan el layout.
 class TabStrip extends StatelessWidget {
   const TabStrip({
     super.key,
@@ -21,21 +23,37 @@ class TabStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.t;
+
     return SizedBox(
       height: 36,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: tabs.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 6),
-        itemBuilder: (context, index) {
-          final tab = tabs[index];
-          return _TabChip(
-            name: tab.name,
-            pending: pendingOf(tab.id),
-            active: tab.id == activeId,
-            onTap: () => onSelect(tab.id),
-          );
-        },
+      child: Row(
+        children: [
+          _TabChip(
+            name: t.t('all_tab'),
+            pending: 0,
+            active: activeId == kAllTabsId,
+            wide: true,
+            onTap: () => onSelect(kAllTabsId),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: tabs.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 6),
+              itemBuilder: (context, index) {
+                final tab = tabs[index];
+                return _TabChip(
+                  name: tab.name,
+                  pending: pendingOf(tab.id),
+                  active: tab.id == activeId,
+                  onTap: () => onSelect(tab.id),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -47,11 +65,13 @@ class _TabChip extends StatelessWidget {
     required this.pending,
     required this.active,
     required this.onTap,
+    this.wide = false,
   });
 
   final String name;
   final int pending;
   final bool active;
+  final bool wide;
   final VoidCallback onTap;
 
   @override
@@ -64,6 +84,7 @@ class _TabChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         alignment: Alignment.center,
+        constraints: BoxConstraints(maxWidth: wide ? 90 : 140),
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(9),
@@ -76,13 +97,17 @@ class _TabChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              name,
-              style: TextStyle(
-                fontFamily: AppFonts.mono,
-                fontSize: 19,
-                height: 1.0,
-                color: active ? c.accent : c.inkDim,
+            Flexible(
+              child: Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: AppFonts.mono,
+                  fontSize: 19,
+                  height: 1.0,
+                  color: active ? c.accent : c.inkDim,
+                ),
               ),
             ),
             if (pending > 0) ...[

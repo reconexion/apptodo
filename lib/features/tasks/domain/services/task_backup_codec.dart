@@ -31,15 +31,15 @@ class TaskBackupCodec {
   }
 
   /// Lanza [FormatException] si no encuentra nada aprovechable.
+  /// Si el texto no trae ninguna linea "## nombre", [TaskSnapshot.tabs]
+  /// queda vacio y todas las tareas usan tabId 0 (sin resolver): quien
+  /// llama decide a que pestana van.
   TaskSnapshot decode(String raw) {
     final tabs = <TaskTab>[];
     final tasks = <Task>[];
     var tabId = 0;
     var taskId = 0;
-
-    void ensureTab() {
-      if (tabs.isEmpty) tabs.add(TaskTab(id: ++tabId, name: 'GENERAL'));
-    }
+    var currentTabId = 0;
 
     for (final rawLine in raw.split('\n')) {
       final line = rawLine.trim();
@@ -48,33 +48,34 @@ class TaskBackupCodec {
       final tabMatch = _tabLine.firstMatch(line);
       if (tabMatch != null) {
         final name = tabMatch.group(1)!.trim();
-        if (name.isNotEmpty) tabs.add(TaskTab(id: ++tabId, name: name));
+        if (name.isNotEmpty) {
+          final tab = TaskTab(id: ++tabId, name: name);
+          tabs.add(tab);
+          currentTabId = tab.id;
+        }
         continue;
       }
 
-      // Comentarios de cabecera.
       if (line.startsWith('#')) continue;
 
       final taskMatch = _taskLine.firstMatch(line);
       if (taskMatch != null) {
         final text = taskMatch.group(2)!.trim();
         if (text.isEmpty) continue;
-        ensureTab();
         tasks.add(Task(
           id: ++taskId,
           text: text,
-          tabId: tabs.last.id,
+          tabId: currentTabId,
           done: taskMatch.group(1)!.toLowerCase() == 'x',
         ));
         continue;
       }
 
       // Linea suelta sin corchetes: se toma como pendiente.
-      ensureTab();
-      tasks.add(Task(id: ++taskId, text: line, tabId: tabs.last.id));
+      tasks.add(Task(id: ++taskId, text: line, tabId: currentTabId));
     }
 
-    if (tabs.isEmpty) {
+    if (tasks.isEmpty) {
       throw const FormatException('No se encontraron tareas en el texto.');
     }
     return TaskSnapshot(tabs: tabs, tasks: tasks);

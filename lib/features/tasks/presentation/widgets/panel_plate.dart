@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_theme.dart';
 
 /// Franja superior: marca grabada, controles y lampara de encendido.
@@ -18,12 +19,13 @@ class PanelPlate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
+    final t = context.t;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'PENDIENTES',
+          t.t('brand'),
           style: TextStyle(
             fontFamily: AppFonts.display,
             fontSize: 13,
@@ -37,7 +39,7 @@ class PanelPlate extends StatelessWidget {
             _PlateButton(
               onTap: onToggleSound,
               child: Text(
-                muted ? 'SND OFF' : 'SND ON',
+                muted ? t.t('sound_off') : t.t('sound_on'),
                 style: TextStyle(
                   fontFamily: AppFonts.display,
                   fontSize: 9,

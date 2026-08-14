@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/audio/sfx_player.dart';
+import 'core/l10n/language_controller.dart';
 import 'core/theme/theme_controller.dart';
 import 'features/tasks/data/datasources/task_local_data_source.dart';
 import 'features/tasks/data/repositories/task_repository_impl.dart';
@@ -12,6 +13,7 @@ import 'features/tasks/domain/usecases/export_tasks.dart';
 import 'features/tasks/domain/usecases/get_snapshot.dart';
 import 'features/tasks/domain/usecases/import_tasks.dart';
 import 'features/tasks/domain/usecases/manage_tabs.dart';
+import 'features/tasks/domain/usecases/move_task.dart';
 import 'features/tasks/domain/usecases/toggle_task.dart';
 import 'features/tasks/presentation/viewmodels/tasks_view_model.dart';
 
@@ -30,11 +32,15 @@ class Injection {
 
   static ThemeController createThemeController() => ThemeController(_prefs);
 
+  static LanguageController createLanguageController() =>
+      LanguageController(_prefs);
+
   static TasksViewModel createTasksViewModel() => TasksViewModel(
     getSnapshot: GetSnapshot(_repository),
     addTask: AddTask(_repository),
     toggleTask: ToggleTask(_repository),
     deleteTask: DeleteTask(_repository),
+    moveTask: MoveTask(_repository),
     addTab: AddTab(_repository),
     renameTab: RenameTab(_repository),
     deleteTab: DeleteTab(_repository),

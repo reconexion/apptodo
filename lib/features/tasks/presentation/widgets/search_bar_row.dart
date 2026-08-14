@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_theme.dart';
 
 /// Barra de busqueda: ranura hundida con lupa y boton de limpiar.
@@ -45,6 +46,7 @@ class _SearchBarRowState extends State<SearchBarRow> {
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
+    final t = context.t;
 
     final textStyle = TextStyle(
       fontFamily: AppFonts.mono,
@@ -63,7 +65,7 @@ class _SearchBarRowState extends State<SearchBarRow> {
         maxLines: 1,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
-          hintText: 'buscar...',
+          hintText: t.t('search_placeholder'),
           hintStyle: textStyle.copyWith(color: c.inkFaint),
           isDense: true,
           filled: true,

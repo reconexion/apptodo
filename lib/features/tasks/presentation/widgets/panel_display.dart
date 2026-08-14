@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_theme.dart';
 
-/// Display: contador global, medidor de avance y marcas.
+/// Display: contador global, medidor de avance, marcas y un kaomoji
+/// que se elige al azar cada vez que se abre la app.
 class PanelDisplay extends StatelessWidget {
   const PanelDisplay({
     super.key,
@@ -11,22 +13,25 @@ class PanelDisplay extends StatelessWidget {
     required this.doneCount,
     required this.total,
     required this.progress,
+    required this.kaomoji,
   });
 
   final int pending;
   final int doneCount;
   final int total;
   final double progress;
+  final String kaomoji;
 
-  String get _caption {
-    if (pending == 0) return 'todo listo';
-    if (pending == 1) return 'cosa por hacer';
-    return 'cosas por hacer';
+  String _caption(AppStrings t) {
+    if (pending == 0) return t.t('display_ready');
+    if (pending == 1) return t.t('display_one_pending');
+    return t.t('display_many_pending');
   }
 
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
+    final t = context.t;
 
     final tickStyle = TextStyle(
       fontFamily: AppFonts.mono,
@@ -50,7 +55,6 @@ class PanelDisplay extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         child: Stack(
           children: [
-            // Resplandor del tubo, mas fuerte abajo.
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -82,7 +86,7 @@ class PanelDisplay extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        _caption,
+                        _caption(t),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -98,14 +102,29 @@ class PanelDisplay extends StatelessWidget {
                     const _BlinkingCursor(),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
+                Text(
+                  kaomoji,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: AppFonts.mono,
+                    fontSize: 15,
+                    height: 1.0,
+                    color: c.displayInkSoft.withValues(alpha: 0.75),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 _Meter(progress: progress, palette: c),
                 const SizedBox(height: 6),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('0', style: tickStyle),
-                    Text('$doneCount / $total hechas', style: tickStyle),
+                    Text(
+                      t.t('done_of_total', {'done': doneCount, 'total': total}),
+                      style: tickStyle,
+                    ),
                     Text('100', style: tickStyle),
                   ],
                 ),
