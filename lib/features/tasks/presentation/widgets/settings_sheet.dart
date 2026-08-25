@@ -290,7 +290,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       key: ValueKey('${tab.id}:${tab.name}'),
                       tab: tab,
                       taskCount:
-                      vm.tasks.where((t) => t.tabId == tab.id).length,
+                      vm.tasks.where((t) => t.tabIds.contains(tab.id)).length,
                       onRename: (name) => _renameTab(tab, name),
                       onDelete: () => _deleteTab(tab),
                     ),

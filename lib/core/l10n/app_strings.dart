@@ -45,7 +45,10 @@ class AppStrings {
     'settings_tabs': 'PESTAÑAS',
     'settings_tabs_hint':
     'toca el nombre para editarlo. crear y eliminar necesitan '
-        'mantener presionado 5 segundos y confirmar con un toque más.',
+        'mantener presionado 5 segundos y confirmar con un toque más. '
+        'una tarea puede pertenecer a varias pestañas a la vez: mantenla '
+        'presionada para elegir cuáles. eliminar una pestaña no borra sus '
+        'tareas, solo las desliga.',
     'settings_new_tab_placeholder': 'nueva pestaña',
     'settings_hold_create': 'MANTÉN P/ CREAR',
     'settings_hold_delete': 'MANTÉN P/ BORRAR',
@@ -54,12 +57,14 @@ class AppStrings {
     'settings_export': 'EXPORTAR',
     'settings_export_hint':
     'los [x] son las marcadas y los [ ] las pendientes. '
-        'cada ## abre una pestaña.',
+        'cada ## declara una pestaña, y {nombre, nombre2} antes del '
+        'texto liga esa tarea a una o varias.',
     'settings_copy': 'COPIAR',
     'settings_import': 'IMPORTAR',
     'settings_import_hint':
-    'se agrega a "{tab}" sin borrar lo que ya tienes. si el texto '
-        'trae secciones "## nombre", cada una va a su pestaña.',
+    'se agrega a "{tab}" sin borrar lo que ya tienes. usa "## nombre" '
+        'para declarar pestañas y "{nombre, nombre2}" antes del texto '
+        'para ligar una tarea a varias.',
     'settings_import_hint_no_tab':
     'crea una pestaña primero para poder importar.',
     'settings_paste': 'PEGAR',
@@ -74,9 +79,7 @@ class AppStrings {
     'msg_backup_needed': 'pega primero un respaldo',
     'msg_imported': '{count} tareas agregadas a "{tab}"',
     'msg_import_invalid': 'el texto no tiene tareas válidas',
-    'move_task_title': 'mover a',
-    'move_task_here': 'ya está aquí',
-    'move_task_done': 'movida a "{tab}"',
+    'task_tabs_title': 'pestañas ligadas',
     'cancel': 'cancelar',
   };
 
@@ -110,7 +113,9 @@ class AppStrings {
     'settings_tabs': 'TABS',
     'settings_tabs_hint':
     'tap the name to edit it. creating and deleting need a 5 second '
-        'hold plus one more tap to confirm.',
+        'hold plus one more tap to confirm. a task can belong to several '
+        'tabs at once: hold it to pick which ones. deleting a tab does '
+        'not delete its tasks, it only unlinks them.',
     'settings_new_tab_placeholder': 'new tab',
     'settings_hold_create': 'HOLD TO CREATE',
     'settings_hold_delete': 'HOLD TO DELETE',
@@ -118,12 +123,14 @@ class AppStrings {
     'settings_only_tab': 'LAST TAB',
     'settings_export': 'EXPORT',
     'settings_export_hint':
-    '[x] are marked, [ ] are pending. each ## opens a tab.',
+    '[x] are marked, [ ] are pending. each ## declares a tab, and '
+        '{name, name2} before the text links that task to one or more.',
     'settings_copy': 'COPY',
     'settings_import': 'IMPORT',
     'settings_import_hint':
     'gets added to "{tab}" without deleting what you already have. '
-        'if the text has "## name" sections, each goes to its own tab.',
+        'use "## name" to declare tabs and "{name, name2}" before the '
+        'text to link a task to several.',
     'settings_import_hint_no_tab': 'create a tab first to be able to import.',
     'settings_paste': 'PASTE',
     'settings_hold_import': 'HOLD TO IMPORT',
@@ -137,9 +144,7 @@ class AppStrings {
     'msg_backup_needed': 'paste a backup first',
     'msg_imported': '{count} tasks added to "{tab}"',
     'msg_import_invalid': 'the text has no valid tasks',
-    'move_task_title': 'move to',
-    'move_task_here': 'already here',
-    'move_task_done': 'moved to "{tab}"',
+    'task_tabs_title': 'linked tabs',
     'cancel': 'cancel',
   };
 

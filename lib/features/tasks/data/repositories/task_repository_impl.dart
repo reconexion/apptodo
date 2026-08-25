@@ -61,7 +61,7 @@ class TaskRepositoryImpl implements TaskRepository {
     final id = _nextId(_tasksCache!.map((t) => t.id));
     return _commit(
       _tabsCache!,
-      [TaskModel(id: id, text: text, tabId: tabId), ..._tasksCache!],
+      [TaskModel(id: id, text: text, tabIds: {tabId}), ..._tasksCache!],
     );
   }
 
@@ -71,7 +71,7 @@ class TaskRepositoryImpl implements TaskRepository {
     return _commit(_tabsCache!, [
       for (final t in _tasksCache!)
         if (t.id == id)
-          TaskModel(id: t.id, text: t.text, tabId: t.tabId, done: !t.done)
+          TaskModel(id: t.id, text: t.text, tabIds: t.tabIds, done: !t.done)
         else
           t,
     ]);
@@ -87,13 +87,18 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
-  Future<TaskSnapshot> moveTask(int taskId, int toTabId) async {
+  Future<TaskSnapshot> setTaskTabs(int taskId, Set<int> tabIds) async {
     await _ensureLoaded();
-    if (_tabsCache!.every((t) => t.id != toTabId)) return _snapshot;
+    final validIds = _tabsCache!.map((t) => t.id).toSet();
     return _commit(_tabsCache!, [
       for (final t in _tasksCache!)
         if (t.id == taskId)
-          TaskModel(id: t.id, text: t.text, tabId: toTabId, done: t.done)
+          TaskModel(
+            id: t.id,
+            text: t.text,
+            tabIds: tabIds.intersection(validIds),
+            done: t.done,
+          )
         else
           t,
     ]);
@@ -121,10 +126,19 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<TaskSnapshot> deleteTab(int id) async {
     await _ensureLoaded();
-    // Ahora si se permite quedar en 0 pestanas.
+    // Ya no se borran las tareas: solo se desligan de la pestana borrada.
+    // Pueden quedar sin ninguna pestana, es un estado valido.
     return _commit(
       _tabsCache!.where((tab) => tab.id != id).toList(),
-      _tasksCache!.where((t) => t.tabId != id).toList(),
+      [
+        for (final t in _tasksCache!)
+          TaskModel(
+            id: t.id,
+            text: t.text,
+            tabIds: t.tabIds.difference({id}),
+            done: t.done,
+          ),
+      ],
     );
   }
 
@@ -137,7 +151,7 @@ class TaskRepositoryImpl implements TaskRepository {
     var id = 0;
     final safeTasks = [
       for (final t in tasks)
-        TaskModel(id: ++id, text: t.text, tabId: t.tabId, done: t.done),
+        TaskModel(id: ++id, text: t.text, tabIds: t.tabIds, done: t.done),
     ];
     return _commit(safeTabs, safeTasks);
   }
@@ -156,12 +170,13 @@ class TaskRepositoryImpl implements TaskRepository {
     var nextTaskId = _nextId(tasks.map((t) => t.id));
 
     if (incomingTabs.isEmpty) {
+      // Texto plano sin "## nombre": todo entra a la pestana activa.
       if (tabs.every((t) => t.id != intoTabId)) return _snapshot;
       for (final t in incomingTasks) {
         tasks.add(TaskModel(
           id: nextTaskId++,
           text: t.text,
-          tabId: intoTabId,
+          tabIds: {intoTabId},
           done: t.done,
         ));
       }
@@ -184,11 +199,14 @@ class TaskRepositoryImpl implements TaskRepository {
     }
 
     for (final t in incomingTasks) {
-      final targetTab = resolvedTabId[t.tabId] ?? intoTabId;
+      final targetTabIds = t.tabIds
+          .map((id) => resolvedTabId[id])
+          .whereType<int>()
+          .toSet();
       tasks.add(TaskModel(
         id: nextTaskId++,
         text: t.text,
-        tabId: targetTab,
+        tabIds: targetTabIds,
         done: t.done,
       ));
     }

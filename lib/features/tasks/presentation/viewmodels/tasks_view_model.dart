@@ -12,7 +12,7 @@ import '../../domain/usecases/export_tasks.dart';
 import '../../domain/usecases/get_snapshot.dart';
 import '../../domain/usecases/import_tasks.dart';
 import '../../domain/usecases/manage_tabs.dart';
-import '../../domain/usecases/move_task.dart';
+import '../../domain/usecases/set_task_tabs.dart';
 import '../../domain/usecases/toggle_task.dart';
 
 /// Filtro especial: junta las tareas de todas las pestanas en una vista.
@@ -24,7 +24,7 @@ class TasksViewModel extends ChangeNotifier {
     required AddTask addTask,
     required ToggleTask toggleTask,
     required DeleteTask deleteTask,
-    required MoveTask moveTask,
+    required SetTaskTabs setTaskTabs,
     required AddTab addTab,
     required RenameTab renameTab,
     required DeleteTab deleteTab,
@@ -35,7 +35,7 @@ class TasksViewModel extends ChangeNotifier {
         _addTask = addTask,
         _toggleTask = toggleTask,
         _deleteTask = deleteTask,
-        _moveTask = moveTask,
+        _setTaskTabs = setTaskTabs,
         _addTab = addTab,
         _renameTab = renameTab,
         _deleteTab = deleteTab,
@@ -47,7 +47,7 @@ class TasksViewModel extends ChangeNotifier {
   final AddTask _addTask;
   final ToggleTask _toggleTask;
   final DeleteTask _deleteTask;
-  final MoveTask _moveTask;
+  final SetTaskTabs _setTaskTabs;
   final AddTab _addTab;
   final RenameTab _renameTab;
   final DeleteTab _deleteTab;
@@ -86,7 +86,7 @@ class TasksViewModel extends ChangeNotifier {
   /// Las de la pestana activa, o todas si esta seleccionado "TODAS".
   List<Task> get tabTasks {
     if (isAllSelected) return _tasks;
-    return _tasks.where((t) => t.tabId == _activeTabId).toList();
+    return _tasks.where((t) => t.tabIds.contains(_activeTabId)).toList();
   }
 
   /// Las de arriba, filtradas ademas por busqueda.
@@ -112,7 +112,7 @@ class TasksViewModel extends ChangeNotifier {
   double get progress => _tasks.isEmpty ? 0 : doneCount / _tasks.length;
 
   int pendingIn(int tabId) =>
-      _tasks.where((t) => t.tabId == tabId && !t.done).length;
+      _tasks.where((t) => t.tabIds.contains(tabId) && !t.done).length;
 
   void _apply(TaskSnapshot snapshot) {
     _tabs = snapshot.tabs;
@@ -153,10 +153,11 @@ class TasksViewModel extends ChangeNotifier {
     HapticFeedback.mediumImpact();
   }
 
-  Future<void> moveTask(int taskId, int toTabId) async {
-    _apply(await _moveTask(taskId, toTabId));
+  /// Reemplaza el conjunto de pestanas ligadas a una tarea ya creada.
+  Future<void> setTaskTabs(int taskId, Set<int> tabIds) async {
+    _apply(await _setTaskTabs(taskId, tabIds));
     _sfx.play(Sfx.done);
-    HapticFeedback.mediumImpact();
+    HapticFeedback.selectionClick();
   }
 
   void selectTab(int id) {

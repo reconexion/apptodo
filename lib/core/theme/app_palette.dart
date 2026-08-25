@@ -243,8 +243,54 @@ class AppPalettes {
     screwSlot: Color(0xFF0C0C0E),
   );
 
+  /// Carcasa azul noche, saturada y profunda; pantalla y controles en
+  /// naranja pleno que resalta contra el fondo oscuro.
+  static const blueAmber = AppPalette(
+    id: 'blue_amber',
+    label: 'AZUL ÁMBAR',
+    brightness: Brightness.dark,
+    panelLight: Color(0xFF1B3B6B),
+    panel: Color(0xFF122A52),
+    panelDark: Color(0xFF091A38),
+    edge: Color(0xFF2C5C9E),
+    engrave: Color(0xFF4E93E0),
+    ink: Color(0xFFE8F1FF),
+    inkDim: Color(0xFF7FA8DE),
+    inkFaint: Color(0xFF4E729E),
+    field: Color(0xFF0E2444),
+    fieldDeep: Color(0xFF081833),
+    glassTop: Color(0xFFFFC169),
+    glass: Color(0xFFFF9A1F),
+    glassEdge: Color(0xFFE67E00),
+    displayInk: Color(0xFF4A2600),
+    displayInkSoft: Color(0xFF6B3D00),
+    displayTick: Color(0xFF8A5013),
+    glow: Color.fromRGBO(74, 38, 0, 0.25),
+    halo: Color.fromRGBO(255, 255, 255, 0.35),
+    meterTrack: Color(0xFFE0821A),
+    meterTrackEdge: Color(0xFFB8650A),
+    accent: Color(0xFFFF9A1F),
+    accentLight: Color(0xFFFFC266),
+    accentDark: Color(0xFFCC7300),
+    onAccent: Color(0xFF3D2000),
+    tileTop: Color(0xFF17325C),
+    tileBottom: Color(0xFF102748),
+    tileDoneTop: Color(0xFF122A50),
+    tileDoneBottom: Color(0xFF0C1F3C),
+    ledOffTop: Color(0xFF2C4E80),
+    ledOffBottom: Color(0xFF162E54),
+    ledOffBorder: Color(0xFF3563A0),
+    chipActive: Color(0xFF3D2A10),
+    chipIdle: Color(0xFF122A50),
+    scanline: Color.fromRGBO(10, 30, 60, 0.20),
+    danger: Color(0xFFE5533D),
+    screwLight: Color(0xFF3A6398),
+    screwDark: Color(0xFF0F2444),
+    screwSlot: Color(0xFF061428),
+  );
+
   /// NES verde primero: es el tema por defecto.
-  static const all = <AppPalette>[nesBlue, nes, amber];
+  static const all = <AppPalette>[nesBlue, nes, amber, blueAmber];
 
   static AppPalette byId(String? id) {
     for (final p in all) {

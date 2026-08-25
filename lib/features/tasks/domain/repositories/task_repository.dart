@@ -10,8 +10,8 @@ abstract class TaskRepository {
   Future<TaskSnapshot> toggleTask(int id);
   Future<TaskSnapshot> deleteTask(int id);
 
-  /// Cambia la tarea de pestana. No hace nada si el id no existe.
-  Future<TaskSnapshot> moveTask(int taskId, int toTabId);
+  /// Reemplaza el conjunto de pestanas ligadas a una tarea.
+  Future<TaskSnapshot> setTaskTabs(int taskId, Set<int> tabIds);
 
   Future<TaskSnapshot> addTab(String name);
   Future<TaskSnapshot> renameTab(int id, String name);

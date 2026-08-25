@@ -7,8 +7,9 @@ import '../../domain/entities/task.dart';
 import '../../domain/entities/task_tab.dart';
 import '../viewmodels/tasks_view_model.dart';
 
-/// Menu para mover una tarea a otra pestana. Se abre al mantener presionada.
-Future<void> showMoveTaskSheet(
+/// Editor de pestanas ligadas a una tarea. Se abre al mantener presionada.
+/// Cada toque liga o desliga esa pestana de una vez, sin boton de guardar.
+Future<void> showTaskTabsSheet(
     BuildContext context,
     TasksViewModel vm,
     Task task,
@@ -18,21 +19,37 @@ Future<void> showMoveTaskSheet(
     backgroundColor: Colors.transparent,
     builder: (_) => ChangeNotifierProvider<TasksViewModel>.value(
       value: vm,
-      child: MoveTaskSheet(task: task),
+      child: TaskTabsSheet(taskId: task.id, initialText: task.text),
     ),
   );
 }
 
-class MoveTaskSheet extends StatelessWidget {
-  const MoveTaskSheet({super.key, required this.task});
+class TaskTabsSheet extends StatelessWidget {
+  const TaskTabsSheet({
+    super.key,
+    required this.taskId,
+    required this.initialText,
+  });
 
-  final Task task;
+  final int taskId;
+  final String initialText;
 
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
     final t = context.t;
     final vm = context.watch<TasksViewModel>();
+
+    // La tarea puede haberse borrado mientras la hoja estaba abierta.
+    Task? current;
+    for (final task in vm.tasks) {
+      if (task.id == taskId) {
+        current = task;
+        break;
+      }
+    }
+    if (current == null) return const SizedBox.shrink();
+    final task = current;
 
     final label = TextStyle(
       fontFamily: AppFonts.display,
@@ -79,10 +96,10 @@ class MoveTaskSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                Text(t.t('move_task_title'), style: label),
+                Text(t.t('task_tabs_title'), style: label),
                 const SizedBox(height: 4),
                 Text(
-                  task.text,
+                  initialText,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -99,15 +116,14 @@ class MoveTaskSheet extends StatelessWidget {
                     separatorBuilder: (_, __) => const SizedBox(height: 6),
                     itemBuilder: (context, index) {
                       final tab = vm.tabs[index];
-                      final here = tab.id == task.tabId;
+                      final linked = task.tabIds.contains(tab.id);
                       return _TabOption(
                         tab: tab,
-                        disabled: here,
-                        onTap: here
-                            ? null
-                            : () async {
-                          Navigator.pop(context);
-                          await vm.moveTask(task.id, tab.id);
+                        linked: linked,
+                        onTap: () {
+                          final next = {...task.tabIds};
+                          if (!next.remove(tab.id)) next.add(tab.id);
+                          vm.setTaskTabs(task.id, next);
                         },
                       );
                     },
@@ -123,16 +139,15 @@ class MoveTaskSheet extends StatelessWidget {
 }
 
 class _TabOption extends StatelessWidget {
-  const _TabOption({required this.tab, required this.disabled, this.onTap});
+  const _TabOption({required this.tab, required this.linked, this.onTap});
 
   final TaskTab tab;
-  final bool disabled;
+  final bool linked;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
-    final t = context.t;
 
     return GestureDetector(
       onTap: onTap,
@@ -142,11 +157,17 @@ class _TabOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: c.field,
-          border: Border.all(color: c.edge),
+          color: linked ? c.chipActive : c.field,
+          border: Border.all(color: linked ? c.accentDark : c.edge),
         ),
         child: Row(
           children: [
+            Icon(
+              linked ? Icons.check_box : Icons.check_box_outline_blank,
+              size: 20,
+              color: linked ? c.accent : c.inkFaint,
+            ),
+            const SizedBox(width: 10),
             Expanded(
               child: Text(
                 tab.name,
@@ -155,21 +176,10 @@ class _TabOption extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: AppFonts.mono,
                   fontSize: 19,
-                  color: disabled ? c.inkFaint : c.ink,
+                  color: linked ? c.ink : c.inkDim,
                 ),
               ),
             ),
-            if (disabled)
-              Text(
-                t.t('move_task_here'),
-                style: TextStyle(
-                  fontFamily: AppFonts.mono,
-                  fontSize: 15,
-                  color: c.inkFaint,
-                ),
-              )
-            else
-              Icon(Icons.chevron_right, size: 18, color: c.inkDim),
           ],
         ),
       ),

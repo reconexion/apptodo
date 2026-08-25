@@ -7,12 +7,12 @@ import '../../../../core/theme/app_theme.dart';
 import '../viewmodels/tasks_view_model.dart';
 import '../widgets/add_task_row.dart';
 import '../widgets/chassis.dart';
-import '../widgets/move_task_sheet.dart';
 import '../widgets/panel_display.dart';
 import '../widgets/panel_plate.dart';
 import '../widgets/search_bar_row.dart';
 import '../widgets/settings_sheet.dart';
 import '../widgets/tab_strip.dart';
+import '../widgets/task_tabs_sheet.dart';
 import '../widgets/task_tile.dart';
 
 class TasksPage extends StatelessWidget {
@@ -126,10 +126,13 @@ class TasksPage extends StatelessWidget {
                               final task = visible[index];
                               return TaskTile(
                                 task: task,
+                                tabs: vm.tabs,
+                                showTabChips:
+                                vm.isAllSelected || task.tabIds.length > 1,
                                 onToggle: () => vm.toggle(task.id),
                                 onDelete: () => vm.remove(task.id),
                                 onLongPress: () =>
-                                    showMoveTaskSheet(
+                                    showTaskTabsSheet(
                                       context,
                                       vm,
                                       task,

@@ -13,7 +13,7 @@ import 'features/tasks/domain/usecases/export_tasks.dart';
 import 'features/tasks/domain/usecases/get_snapshot.dart';
 import 'features/tasks/domain/usecases/import_tasks.dart';
 import 'features/tasks/domain/usecases/manage_tabs.dart';
-import 'features/tasks/domain/usecases/move_task.dart';
+import 'features/tasks/domain/usecases/set_task_tabs.dart';
 import 'features/tasks/domain/usecases/toggle_task.dart';
 import 'features/tasks/presentation/viewmodels/tasks_view_model.dart';
 
@@ -40,7 +40,7 @@ class Injection {
     addTask: AddTask(_repository),
     toggleTask: ToggleTask(_repository),
     deleteTask: DeleteTask(_repository),
-    moveTask: MoveTask(_repository),
+    setTaskTabs: SetTaskTabs(_repository),
     addTab: AddTab(_repository),
     renameTab: RenameTab(_repository),
     deleteTab: DeleteTab(_repository),
