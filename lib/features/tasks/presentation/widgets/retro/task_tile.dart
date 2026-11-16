@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/task.dart';
-import '../../domain/entities/task_tab.dart';
+import '../../../../../core/theme/app_theme.dart';
+import '../../../domain/entities/task.dart';
+import '../../../domain/entities/task_tab.dart';
 
 /// Tira de tarea con su LED indicador.
 /// Mantener presionada abre el editor de pestanas ligadas.
@@ -33,8 +33,7 @@ class TaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
-    final linked =
-        tabs.where((tab) => task.tabIds.contains(tab.id)).toList();
+    final linked = tabs.where((tab) => task.tabIds.contains(tab.id)).toList();
 
     return GestureDetector(
       onLongPress: onLongPress,
@@ -92,8 +91,10 @@ class TaskTile extends StatelessWidget {
                 children: [
                   for (final tab in linked)
                     Container(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: c.edge),
@@ -145,8 +146,7 @@ class _Led extends StatelessWidget {
                 ? [c.accentLight, c.accentDark]
                 : [c.ledOffTop, c.ledOffBottom],
           ),
-          boxShadow:
-          on ? [BoxShadow(color: c.glow, blurRadius: 13)] : const [],
+          boxShadow: on ? [BoxShadow(color: c.glow, blurRadius: 13)] : const [],
         ),
       ),
     );

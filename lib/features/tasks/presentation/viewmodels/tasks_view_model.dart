@@ -31,17 +31,17 @@ class TasksViewModel extends ChangeNotifier {
     required ExportTasks exportTasks,
     required ImportTasks importTasks,
     required SfxPlayer sfx,
-  })  : _getSnapshot = getSnapshot,
-        _addTask = addTask,
-        _toggleTask = toggleTask,
-        _deleteTask = deleteTask,
-        _setTaskTabs = setTaskTabs,
-        _addTab = addTab,
-        _renameTab = renameTab,
-        _deleteTab = deleteTab,
-        _exportTasks = exportTasks,
-        _importTasks = importTasks,
-        _sfx = sfx;
+  }) : _getSnapshot = getSnapshot,
+       _addTask = addTask,
+       _toggleTask = toggleTask,
+       _deleteTask = deleteTask,
+       _setTaskTabs = setTaskTabs,
+       _addTab = addTab,
+       _renameTab = renameTab,
+       _deleteTab = deleteTab,
+       _exportTasks = exportTasks,
+       _importTasks = importTasks,
+       _sfx = sfx;
 
   final GetSnapshot _getSnapshot;
   final AddTask _addTask;
@@ -148,6 +148,10 @@ class TasksViewModel extends ChangeNotifier {
   }
 
   Future<void> remove(int id) async {
+    // Se quita de inmediato: al deslizar para borrar, la tarjeta debe
+    // salir del arbol en este mismo frame (lo exige Dismissible).
+    _tasks = _tasks.where((t) => t.id != id).toList();
+    notifyListeners();
     _apply(await _deleteTask(id));
     _sfx.play(Sfx.delete);
     HapticFeedback.mediumImpact();

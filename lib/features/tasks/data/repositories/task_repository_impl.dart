@@ -28,9 +28,9 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   Future<TaskSnapshot> _commit(
-      List<TaskTabModel> tabs,
-      List<TaskModel> tasks,
-      ) async {
+    List<TaskTabModel> tabs,
+    List<TaskModel> tasks,
+  ) async {
     _tabsCache = tabs;
     _tasksCache = tasks;
     await _local.write(tabs, tasks);
@@ -59,10 +59,10 @@ class TaskRepositoryImpl implements TaskRepository {
     await _ensureLoaded();
     if (_tabsCache!.every((t) => t.id != tabId)) return _snapshot;
     final id = _nextId(_tasksCache!.map((t) => t.id));
-    return _commit(
-      _tabsCache!,
-      [TaskModel(id: id, text: text, tabIds: {tabId}), ..._tasksCache!],
-    );
+    return _commit(_tabsCache!, [
+      TaskModel(id: id, text: text, tabIds: {tabId}),
+      ..._tasksCache!,
+    ]);
   }
 
   @override
@@ -80,10 +80,7 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<TaskSnapshot> deleteTask(int id) async {
     await _ensureLoaded();
-    return _commit(
-      _tabsCache!,
-      _tasksCache!.where((t) => t.id != id).toList(),
-    );
+    return _commit(_tabsCache!, _tasksCache!.where((t) => t.id != id).toList());
   }
 
   @override
@@ -108,10 +105,10 @@ class TaskRepositoryImpl implements TaskRepository {
   Future<TaskSnapshot> addTab(String name) async {
     await _ensureLoaded();
     final id = _nextId(_tabsCache!.map((t) => t.id));
-    return _commit(
-      [..._tabsCache!, TaskTabModel(id: id, name: name)],
-      _tasksCache!,
-    );
+    return _commit([
+      ..._tabsCache!,
+      TaskTabModel(id: id, name: name),
+    ], _tasksCache!);
   }
 
   @override
@@ -128,25 +125,19 @@ class TaskRepositoryImpl implements TaskRepository {
     await _ensureLoaded();
     // Ya no se borran las tareas: solo se desligan de la pestana borrada.
     // Pueden quedar sin ninguna pestana, es un estado valido.
-    return _commit(
-      _tabsCache!.where((tab) => tab.id != id).toList(),
-      [
-        for (final t in _tasksCache!)
-          TaskModel(
-            id: t.id,
-            text: t.text,
-            tabIds: t.tabIds.difference({id}),
-            done: t.done,
-          ),
-      ],
-    );
+    return _commit(_tabsCache!.where((tab) => tab.id != id).toList(), [
+      for (final t in _tasksCache!)
+        TaskModel(
+          id: t.id,
+          text: t.text,
+          tabIds: t.tabIds.difference({id}),
+          done: t.done,
+        ),
+    ]);
   }
 
   @override
-  Future<TaskSnapshot> replaceAll(
-      List<TaskTab> tabs,
-      List<Task> tasks,
-      ) async {
+  Future<TaskSnapshot> replaceAll(List<TaskTab> tabs, List<Task> tasks) async {
     final safeTabs = tabs.map(TaskTabModel.fromEntity).toList();
     var id = 0;
     final safeTasks = [
@@ -173,12 +164,14 @@ class TaskRepositoryImpl implements TaskRepository {
       // Texto plano sin "## nombre": todo entra a la pestana activa.
       if (tabs.every((t) => t.id != intoTabId)) return _snapshot;
       for (final t in incomingTasks) {
-        tasks.add(TaskModel(
-          id: nextTaskId++,
-          text: t.text,
-          tabIds: {intoTabId},
-          done: t.done,
-        ));
+        tasks.add(
+          TaskModel(
+            id: nextTaskId++,
+            text: t.text,
+            tabIds: {intoTabId},
+            done: t.done,
+          ),
+        );
       }
       return _commit(tabs, tasks);
     }
@@ -187,7 +180,7 @@ class TaskRepositoryImpl implements TaskRepository {
 
     for (final incoming in incomingTabs) {
       final match = tabs.where(
-            (t) => t.name.toLowerCase() == incoming.name.toLowerCase(),
+        (t) => t.name.toLowerCase() == incoming.name.toLowerCase(),
       );
       if (match.isNotEmpty) {
         resolvedTabId[incoming.id] = match.first.id;
@@ -203,12 +196,14 @@ class TaskRepositoryImpl implements TaskRepository {
           .map((id) => resolvedTabId[id])
           .whereType<int>()
           .toSet();
-      tasks.add(TaskModel(
-        id: nextTaskId++,
-        text: t.text,
-        tabIds: targetTabIds,
-        done: t.done,
-      ));
+      tasks.add(
+        TaskModel(
+          id: nextTaskId++,
+          text: t.text,
+          tabIds: targetTabIds,
+          done: t.done,
+        ),
+      );
     }
 
     return _commit(tabs, tasks);

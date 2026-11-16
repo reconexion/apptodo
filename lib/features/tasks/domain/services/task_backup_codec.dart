@@ -8,8 +8,9 @@ import '../entities/task_tab.dart';
 class TaskBackupCodec {
   const TaskBackupCodec();
 
-  static final RegExp _taskLine =
-      RegExp(r'^\s*\[\s*([xX ])\s*\]\s*(?:\{([^}]*)\}\s*)?(.+)$');
+  static final RegExp _taskLine = RegExp(
+    r'^\s*\[\s*([xX ])\s*\]\s*(?:\{([^}]*)\}\s*)?(.+)$',
+  );
   static final RegExp _tabLine = RegExp(r'^\s*##\s*(.+)$');
 
   String encode(List<TaskTab> tabs, List<Task> tasks, {DateTime? at}) {
@@ -30,8 +31,10 @@ class TaskBackupCodec {
     buffer.writeln();
 
     for (final t in tasks) {
-      final tagNames =
-          t.tabIds.map((id) => nameById[id]).whereType<String>().toList();
+      final tagNames = t.tabIds
+          .map((id) => nameById[id])
+          .whereType<String>()
+          .toList();
       final tags = tagNames.isEmpty ? '' : '{${tagNames.join(', ')}} ';
       buffer.writeln('${t.done ? '[x]' : '[ ]'} $tags${t.text}');
     }

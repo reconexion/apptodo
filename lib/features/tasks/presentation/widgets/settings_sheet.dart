@@ -10,7 +10,8 @@ import '../../../../core/theme/theme_controller.dart';
 import '../../domain/entities/task_tab.dart';
 import '../viewmodels/tasks_view_model.dart';
 import 'hold_button.dart';
-import 'push_button.dart';
+import 'retro/push_button.dart' as retro;
+import 'wii/push_button.dart' as wii;
 
 /// Abre el panel de configuracion desde abajo.
 Future<void> showSettingsSheet(BuildContext context, TasksViewModel vm) {
@@ -140,10 +141,9 @@ class _SettingsSheetState extends State<SettingsSheet> {
       if (!mounted) return;
       _importController.clear();
       await _loadBackup();
-      _say(t.t('msg_imported', {
-        'count': added,
-        'tab': _vm.activeTab?.name ?? '',
-      }));
+      _say(
+        t.t('msg_imported', {'count': added, 'tab': _vm.activeTab?.name ?? ''}),
+      );
     } on FormatException {
       _say(t.t('msg_import_invalid'), error: true);
     }
@@ -160,14 +160,15 @@ class _SettingsSheetState extends State<SettingsSheet> {
 
     final label = TextStyle(
       fontFamily: AppFonts.display,
-      fontSize: 9,
+      fontSize: AppFonts.ds(9),
       fontWeight: FontWeight.w800,
-      letterSpacing: 3.2,
+      letterSpacing: AppFonts.track(3.2),
       color: c.engrave,
     );
     final hint = TextStyle(
       fontFamily: AppFonts.mono,
-      fontSize: 16,
+      fontSize: AppFonts.ms(16),
+      fontWeight: AppFonts.monoWeight,
       height: 1.1,
       color: c.inkDim,
     );
@@ -220,8 +221,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         behavior: HitTestBehavior.opaque,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
-                          child:
-                          Icon(Icons.close, size: 18, color: c.inkFaint),
+                          child: Icon(Icons.close, size: 18, color: c.inkFaint),
                         ),
                       ),
                     ],
@@ -265,7 +265,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       for (final p in themeCtrl.available)
                         SizedBox(
                           width:
-                          (MediaQuery.of(context).size.width - 36 - 20) / 3,
+                              (MediaQuery.of(context).size.width - 36 - 20) / 3,
                           child: _ThemeChip(
                             palette: p,
                             selected: p.id == themeCtrl.palette.id,
@@ -289,8 +289,9 @@ class _SettingsSheetState extends State<SettingsSheet> {
                     _TabRow(
                       key: ValueKey('${tab.id}:${tab.name}'),
                       tab: tab,
-                      taskCount:
-                      vm.tasks.where((t) => t.tabIds.contains(tab.id)).length,
+                      taskCount: vm.tasks
+                          .where((t) => t.tabIds.contains(tab.id))
+                          .length,
                       onRename: (name) => _renameTab(tab, name),
                       onDelete: () => _deleteTab(tab),
                     ),
@@ -310,7 +311,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                             textCapitalization: TextCapitalization.characters,
                             style: TextStyle(
                               fontFamily: AppFonts.mono,
-                              fontSize: 19,
+                              fontSize: AppFonts.ms(19),
+                              fontWeight: AppFonts.monoWeight,
                               color: c.ink,
                             ),
                             cursorColor: c.accent,
@@ -321,13 +323,16 @@ class _SettingsSheetState extends State<SettingsSheet> {
                               isDense: true,
                               hintStyle: TextStyle(
                                 fontFamily: AppFonts.mono,
-                                fontSize: 19,
+                                fontSize: AppFonts.ms(19),
+                                fontWeight: AppFonts.monoWeight,
                                 color: c.inkFaint,
                               ),
                               filled: true,
                               fillColor: c.fieldDeep,
-                              contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 12),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: c.style == UiStyle.wii ? 12 : 0,
+                              ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(color: c.edge),
@@ -375,7 +380,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         _backup.isEmpty ? '...' : _backup,
                         style: TextStyle(
                           fontFamily: AppFonts.mono,
-                          fontSize: 16,
+                          fontSize: AppFonts.ms(16),
+                          fontWeight: AppFonts.monoWeight,
                           height: 1.25,
                           color: c.displayInk,
                         ),
@@ -389,10 +395,16 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Expanded(
-                          child: PushButton(
-                            label: t.t('settings_copy'),
-                            onPressed: _copy,
-                          ),
+                          child: c.style == UiStyle.wii
+                              ? wii.PushButton(
+                                  label: t.t('settings_copy'),
+                                  icon: Icons.copy_rounded,
+                                  onPressed: _copy,
+                                )
+                              : retro.PushButton(
+                                  label: t.t('settings_copy').toUpperCase(),
+                                  onPressed: _copy,
+                                ),
                         ),
                       ],
                     ),
@@ -408,8 +420,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                   Text(
                     vm.activeTab != null
                         ? t.t('settings_import_hint', {
-                      'tab': vm.activeTab!.name,
-                    })
+                            'tab': vm.activeTab!.name,
+                          })
                         : t.t('settings_import_hint_no_tab'),
                     style: hint,
                   ),
@@ -420,7 +432,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                     enabled: vm.activeTab != null,
                     style: TextStyle(
                       fontFamily: AppFonts.mono,
-                      fontSize: 16,
+                      fontSize: AppFonts.ms(16),
+                      fontWeight: AppFonts.monoWeight,
                       height: 1.25,
                       color: c.ink,
                     ),
@@ -429,7 +442,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       hintText: '[ ] ...',
                       hintStyle: TextStyle(
                         fontFamily: AppFonts.mono,
-                        fontSize: 16,
+                        fontSize: AppFonts.ms(16),
+                        fontWeight: AppFonts.monoWeight,
                         color: c.inkFaint,
                       ),
                       filled: true,
@@ -476,7 +490,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       _message,
                       style: TextStyle(
                         fontFamily: AppFonts.mono,
-                        fontSize: 17,
+                        fontSize: AppFonts.ms(17),
+                        fontWeight: AppFonts.monoWeight,
                         color: _error ? c.danger : c.accent,
                       ),
                     ),
@@ -521,9 +536,9 @@ class _LangChip extends StatelessWidget {
           text,
           style: TextStyle(
             fontFamily: AppFonts.display,
-            fontSize: 12,
+            fontSize: AppFonts.ds(12),
             fontWeight: FontWeight.w800,
-            letterSpacing: 1.6,
+            letterSpacing: AppFonts.track(1.6),
             color: selected ? c.accent : c.inkDim,
           ),
         ),
@@ -579,7 +594,8 @@ class _ThemeChip extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontFamily: AppFonts.mono,
-                fontSize: 15,
+                fontSize: AppFonts.ms(15),
+                fontWeight: AppFonts.monoWeight,
                 height: 1.0,
                 color: selected ? c.accent : c.inkDim,
               ),
@@ -631,8 +647,9 @@ class _TabRow extends StatefulWidget {
 }
 
 class _TabRowState extends State<_TabRow> {
-  late final TextEditingController _controller =
-  TextEditingController(text: widget.tab.name);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.tab.name,
+  );
 
   @override
   void dispose() {
@@ -663,7 +680,8 @@ class _TabRowState extends State<_TabRow> {
               },
               style: TextStyle(
                 fontFamily: AppFonts.mono,
-                fontSize: 19,
+                fontSize: AppFonts.ms(19),
+                fontWeight: AppFonts.monoWeight,
                 color: c.ink,
               ),
               cursorColor: c.accent,
@@ -673,11 +691,15 @@ class _TabRowState extends State<_TabRow> {
                 isDense: true,
                 filled: true,
                 fillColor: c.field,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: c.style == UiStyle.wii ? 12 : 0,
+                ),
                 suffixText: '${widget.taskCount}',
                 suffixStyle: TextStyle(
                   fontFamily: AppFonts.mono,
-                  fontSize: 16,
+                  fontSize: AppFonts.ms(16),
+                  fontWeight: AppFonts.monoWeight,
                   color: c.inkFaint,
                 ),
                 enabledBorder: OutlineInputBorder(
@@ -734,9 +756,9 @@ class _GhostButton extends StatelessWidget {
           label,
           style: TextStyle(
             fontFamily: AppFonts.display,
-            fontSize: 12,
+            fontSize: AppFonts.ds(12),
             fontWeight: FontWeight.w800,
-            letterSpacing: 2,
+            letterSpacing: AppFonts.track(2),
             color: enabled ? c.engrave : c.inkFaint,
           ),
         ),

@@ -140,12 +140,10 @@ class _HoldButtonState extends State<HoldButton>
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: AppFonts.display,
-                      fontSize: widget.compact ? 10 : 12,
+                      fontSize: AppFonts.ds(widget.compact ? 10 : 12),
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 1.8,
-                      color: armed
-                          ? fill
-                          : (t > 0.55 ? c.onAccent : idle),
+                      letterSpacing: AppFonts.track(1.8),
+                      color: armed ? fill : (t > 0.55 ? c.onAccent : idle),
                     ),
                   ),
                 ),

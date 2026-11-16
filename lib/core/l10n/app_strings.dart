@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 enum AppLocale { es, en }
 
 extension AppLocaleContext on BuildContext {
-  AppStrings get t => Localizations.of<AppStrings>(this, AppStrings) ??
+  AppStrings get t =>
+      Localizations.of<AppStrings>(this, AppStrings) ??
       AppStrings(AppLocale.es);
 }
 
@@ -17,7 +18,7 @@ class AppStrings {
 
   static const _es = <String, String>{
     'app_title': 'Pendientes',
-    'brand': 'PENDIENTES',
+    'brand': 'Pendientes',
     'sound_on': 'SND ON',
     'sound_off': 'SND OFF',
     'display_ready': 'todo listo',
@@ -25,15 +26,15 @@ class AppStrings {
     'display_many_pending': 'cosas por hacer',
     'done_of_total': '{done} / {total} hechas',
     'add_placeholder': 'nueva tarea...',
-    'add_button': 'AÑADIR',
+    'add_button': 'Añadir',
     'search_placeholder': 'buscar...',
     'search_tabs_placeholder': 'buscar pestaña...',
     'search_tabs_empty': 'sin pestañas con ese nombre',
     'no_tabs_title': 'sin pestañas',
     'no_tabs_subtitle': 'crea una desde configuración',
     'no_tabs_open_settings': 'ABRIR CONFIGURACIÓN',
-    'all_tab': 'TODAS',
-    'log_label': 'REGISTRO',
+    'all_tab': 'Todas',
+    'log_label': 'Registro',
     'log_of_label': '{visible} DE {total}',
     'empty_tab_title': 'pestaña vacía',
     'empty_tab_subtitle': 'sistema en reposo',
@@ -44,7 +45,7 @@ class AppStrings {
     'settings_language': 'IDIOMA',
     'settings_tabs': 'PESTAÑAS',
     'settings_tabs_hint':
-    'toca el nombre para editarlo. crear y eliminar necesitan '
+        'toca el nombre para editarlo. crear y eliminar necesitan '
         'mantener presionado 5 segundos y confirmar con un toque más. '
         'una tarea puede pertenecer a varias pestañas a la vez: mantenla '
         'presionada para elegir cuáles. eliminar una pestaña no borra sus '
@@ -56,17 +57,17 @@ class AppStrings {
     'settings_only_tab': 'ÚLTIMA PESTAÑA',
     'settings_export': 'EXPORTAR',
     'settings_export_hint':
-    'los [x] son las marcadas y los [ ] las pendientes. '
+        'los [x] son las marcadas y los [ ] las pendientes. '
         'cada ## declara una pestaña, y {nombre, nombre2} antes del '
         'texto liga esa tarea a una o varias.',
     'settings_copy': 'COPIAR',
     'settings_import': 'IMPORTAR',
     'settings_import_hint':
-    'se agrega a "{tab}" sin borrar lo que ya tienes. usa "## nombre" '
+        'se agrega a "{tab}" sin borrar lo que ya tienes. usa "## nombre" '
         'para declarar pestañas y "{nombre, nombre2}" antes del texto '
         'para ligar una tarea a varias.',
     'settings_import_hint_no_tab':
-    'crea una pestaña primero para poder importar.',
+        'crea una pestaña primero para poder importar.',
     'settings_paste': 'PEGAR',
     'settings_hold_import': 'MANTÉN P/ IMPORTAR',
     'msg_tab_created': 'pestaña "{name}" creada',
@@ -81,11 +82,39 @@ class AppStrings {
     'msg_import_invalid': 'el texto no tiene tareas válidas',
     'task_tabs_title': 'pestañas ligadas',
     'cancel': 'cancelar',
+    'missions_title': 'MISIONES',
+    'missions_entry': 'Misiones',
+    'missions_entry_none': 'agrupa tareas y complétalas todas',
+    'missions_entry_summary': '{active} activas · {done} completadas',
+    'missions_new': 'NUEVA MISIÓN',
+    'missions_empty_title': 'sin misiones',
+    'missions_empty_subtitle':
+        'una misión agrupa varias tareas: cuando las completas todas, '
+        'se cumple la misión.',
+    'mission_progress': '{done} / {total} tareas',
+    'mission_done_badge': 'COMPLETADA',
+    'mission_editor_new': 'NUEVA MISIÓN',
+    'mission_editor_edit': 'EDITAR MISIÓN',
+    'mission_title_label': 'TÍTULO',
+    'mission_title_placeholder': 'ej. semana de exámenes',
+    'mission_desc_label': 'LO QUE SE HARÁ',
+    'mission_desc_placeholder': 'describe el objetivo de la misión...',
+    'mission_tasks_label': 'TAREAS DE LA MISIÓN',
+    'mission_tasks_count': '{count} elegidas',
+    'mission_tasks_search': 'buscar tarea...',
+    'mission_no_tasks': 'todavía no tienes tareas: crea algunas primero.',
+    'mission_save': 'GUARDAR',
+    'mission_hold_delete': 'MANTÉN P/ BORRAR',
+    'msg_mission_needs_title': 'ponle un título a la misión',
+    'msg_mission_needs_tasks': 'elige al menos una tarea',
+    'mission_complete_title': '¡MISIÓN COMPLETADA!',
+    'mission_complete_tasks': '{count} tareas cumplidas',
+    'mission_complete_tap': 'toca para continuar',
   };
 
   static const _en = <String, String>{
     'app_title': 'Tasks',
-    'brand': 'TASKS',
+    'brand': 'Tasks',
     'sound_on': 'SND ON',
     'sound_off': 'SND OFF',
     'display_ready': 'all done',
@@ -93,15 +122,15 @@ class AppStrings {
     'display_many_pending': 'tasks left',
     'done_of_total': '{done} / {total} done',
     'add_placeholder': 'new task...',
-    'add_button': 'ADD',
+    'add_button': 'Add',
     'search_placeholder': 'search...',
     'search_tabs_placeholder': 'search tab...',
     'search_tabs_empty': 'no tabs match',
     'no_tabs_title': 'no tabs',
     'no_tabs_subtitle': 'create one from settings',
     'no_tabs_open_settings': 'OPEN SETTINGS',
-    'all_tab': 'ALL',
-    'log_label': 'LOG',
+    'all_tab': 'All',
+    'log_label': 'Log',
     'log_of_label': '{visible} OF {total}',
     'empty_tab_title': 'empty tab',
     'empty_tab_subtitle': 'system idle',
@@ -112,7 +141,7 @@ class AppStrings {
     'settings_language': 'LANGUAGE',
     'settings_tabs': 'TABS',
     'settings_tabs_hint':
-    'tap the name to edit it. creating and deleting need a 5 second '
+        'tap the name to edit it. creating and deleting need a 5 second '
         'hold plus one more tap to confirm. a task can belong to several '
         'tabs at once: hold it to pick which ones. deleting a tab does '
         'not delete its tasks, it only unlinks them.',
@@ -123,12 +152,12 @@ class AppStrings {
     'settings_only_tab': 'LAST TAB',
     'settings_export': 'EXPORT',
     'settings_export_hint':
-    '[x] are marked, [ ] are pending. each ## declares a tab, and '
+        '[x] are marked, [ ] are pending. each ## declares a tab, and '
         '{name, name2} before the text links that task to one or more.',
     'settings_copy': 'COPY',
     'settings_import': 'IMPORT',
     'settings_import_hint':
-    'gets added to "{tab}" without deleting what you already have. '
+        'gets added to "{tab}" without deleting what you already have. '
         'use "## name" to declare tabs and "{name, name2}" before the '
         'text to link a task to several.',
     'settings_import_hint_no_tab': 'create a tab first to be able to import.',
@@ -146,6 +175,34 @@ class AppStrings {
     'msg_import_invalid': 'the text has no valid tasks',
     'task_tabs_title': 'linked tabs',
     'cancel': 'cancel',
+    'missions_title': 'MISSIONS',
+    'missions_entry': 'Missions',
+    'missions_entry_none': 'group tasks and finish them all',
+    'missions_entry_summary': '{active} active · {done} complete',
+    'missions_new': 'NEW MISSION',
+    'missions_empty_title': 'no missions',
+    'missions_empty_subtitle':
+        'a mission groups several tasks: finish them all and the '
+        'mission is complete.',
+    'mission_progress': '{done} / {total} tasks',
+    'mission_done_badge': 'COMPLETE',
+    'mission_editor_new': 'NEW MISSION',
+    'mission_editor_edit': 'EDIT MISSION',
+    'mission_title_label': 'TITLE',
+    'mission_title_placeholder': 'e.g. exam week',
+    'mission_desc_label': 'WHAT WILL BE DONE',
+    'mission_desc_placeholder': 'describe the goal of the mission...',
+    'mission_tasks_label': 'MISSION TASKS',
+    'mission_tasks_count': '{count} selected',
+    'mission_tasks_search': 'search task...',
+    'mission_no_tasks': 'you have no tasks yet: create some first.',
+    'mission_save': 'SAVE',
+    'mission_hold_delete': 'HOLD TO DELETE',
+    'msg_mission_needs_title': 'give the mission a title',
+    'msg_mission_needs_tasks': 'pick at least one task',
+    'mission_complete_title': 'MISSION COMPLETE!',
+    'mission_complete_tasks': '{count} tasks done',
+    'mission_complete_tap': 'tap to continue',
   };
 
   Map<String, String> get _table => locale == AppLocale.es ? _es : _en;
@@ -172,6 +229,5 @@ class AppStringsDelegate extends LocalizationsDelegate<AppStrings> {
   Future<AppStrings> load(Locale locale) async => AppStrings(this.locale);
 
   @override
-  bool shouldReload(covariant AppStringsDelegate old) =>
-      old.locale != locale;
+  bool shouldReload(covariant AppStringsDelegate old) => old.locale != locale;
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/l10n/app_strings.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../../core/l10n/app_strings.dart';
+import '../../../../../core/theme/app_theme.dart';
 import 'push_button.dart';
 
 /// Campo de captura + boton fisico, ambos de la misma altura.
@@ -74,7 +74,10 @@ class _AddTaskRowState extends State<AddTaskRow> {
             ),
           ),
           const SizedBox(width: 10),
-          PushButton(label: t.t('add_button'), onPressed: _submit),
+          PushButton(
+            label: t.t('add_button').toUpperCase(),
+            onPressed: _submit,
+          ),
         ],
       ),
     );

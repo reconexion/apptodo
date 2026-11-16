@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/l10n/app_strings.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/task_tab.dart';
-import '../viewmodels/tasks_view_model.dart';
+import '../../../../../core/l10n/app_strings.dart';
+import '../../../../../core/theme/app_theme.dart';
+import '../../../domain/entities/task_tab.dart';
+import '../../viewmodels/tasks_view_model.dart';
 
 /// Fila de pestanas. "TODAS" queda fija a la izquierda y el resto
 /// se desplaza horizontalmente, para que muchas pestanas no rompan el layout.
@@ -30,7 +30,7 @@ class TabStrip extends StatelessWidget {
       child: Row(
         children: [
           _TabChip(
-            name: t.t('all_tab'),
+            name: t.t('all_tab').toUpperCase(),
             pending: 0,
             active: activeId == kAllTabsId,
             wide: true,
@@ -41,7 +41,7 @@ class TabStrip extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: tabs.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 6),
+              separatorBuilder: (_, _) => const SizedBox(width: 6),
               itemBuilder: (context, index) {
                 final tab = tabs[index];
                 return _TabChip(

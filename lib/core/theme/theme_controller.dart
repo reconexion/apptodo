@@ -2,13 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_palette.dart';
+import 'app_theme.dart';
 
-/// Guarda y expone el tema elegido. NES verde es el default.
+/// Guarda y expone el tema elegido. El tema Wii es el default.
 class ThemeController extends ChangeNotifier {
   ThemeController(this._prefs)
-      : _palette = AppPalettes.byId(_prefs.getString(_key));
+    : _palette = AppPalettes.byId(_prefs.getString(_key));
 
-  static const _key = 'todoapp.theme';
+  // v2: al estrenar el estilo Wii, todos arrancan en el tema nuevo.
+  static const _key = 'todoapp.theme.v2';
 
   final SharedPreferences _prefs;
   AppPalette _palette;
@@ -19,6 +21,7 @@ class ThemeController extends ChangeNotifier {
   void select(AppPalette palette) {
     if (palette.id == _palette.id) return;
     _palette = palette;
+    AppFonts.style = palette.style;
     _prefs.setString(_key, palette.id);
     notifyListeners();
   }

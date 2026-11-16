@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/l10n/app_strings.dart';
-import '../../../../core/theme/app_palette.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../../core/l10n/app_strings.dart';
+import '../../../../../core/theme/app_palette.dart';
+import '../../../../../core/theme/app_theme.dart';
 
 /// Display: contador global, medidor de avance, marcas y un kaomoji
 /// que se elige al azar cada vez que se abre la app.
@@ -209,10 +209,8 @@ class _BlinkingCursorState extends State<_BlinkingCursor>
 
     return AnimatedBuilder(
       animation: _controller,
-      builder: (context, child) => Opacity(
-        opacity: _controller.value < 0.5 ? 1 : 0,
-        child: child,
-      ),
+      builder: (context, child) =>
+          Opacity(opacity: _controller.value < 0.5 ? 1 : 0, child: child),
       child: Container(
         width: 10,
         height: 20,

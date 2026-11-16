@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/l10n/app_strings.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../../core/l10n/app_strings.dart';
+import '../../../../../core/theme/app_theme.dart';
 
 /// Franja superior: marca grabada, controles y lampara de encendido.
 class PanelPlate extends StatelessWidget {
@@ -25,7 +25,7 @@ class PanelPlate extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          t.t('brand'),
+          t.t('brand').toUpperCase(),
           style: TextStyle(
             fontFamily: AppFonts.display,
             fontSize: 13,
@@ -115,9 +115,10 @@ class _PowerLampState extends State<_PowerLamp>
     final c = context.palette;
 
     return FadeTransition(
-      opacity: Tween<double>(begin: 0.5, end: 1.0).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-      ),
+      opacity: Tween<double>(
+        begin: 0.5,
+        end: 1.0,
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut)),
       child: Container(
         width: 10,
         height: 10,

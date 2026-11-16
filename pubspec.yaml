@@ -27,6 +27,14 @@ flutter:
   uses-material-design: true
 
   fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-600.ttf
+          weight: 600
+        - asset: assets/fonts/Nunito-700.ttf
+          weight: 700
+        - asset: assets/fonts/Nunito-800.ttf
+          weight: 800
     - family: VT323
       fonts:
         - asset: assets/fonts/VT323-Regular.ttf
@@ -42,6 +50,6 @@ flutter:
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: true
-  image_path: "assets/icon/iconer.png"
-  adaptive_icon_background: "#101012"
-  adaptive_icon_foreground: "assets/icon/iconer.png"
+  image_path: "assets/icon/iconer_white.png"
+  adaptive_icon_background: "#E6EDF6"
+  adaptive_icon_foreground: "assets/icon/iconer_white.png"

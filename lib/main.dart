@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'core/l10n/language_controller.dart';
 import 'core/theme/app_palette.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/theme_controller.dart';
 import 'features/tasks/presentation/pages/tasks_page.dart';
+import 'features/tasks/presentation/viewmodels/tasks_view_model.dart';
 import 'injection.dart';
 
 void main() {
@@ -24,7 +23,7 @@ class TodoRetroApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pendientes',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.from(AppPalettes.nesBlue),
+      theme: AppTheme.from(AppPalettes.wii),
       home: const _Bootstrap(),
     );
   }
@@ -62,12 +61,24 @@ class _BootstrapState extends State<_Bootstrap> {
             ChangeNotifierProvider(
               create: (_) => Injection.createTasksViewModel()..load(),
             ),
+            // Las misiones escuchan a las tareas, por eso van despues.
+            ChangeNotifierProvider(
+              create: (context) => Injection.createMissionsViewModel(
+                context.read<TasksViewModel>(),
+              )..load(),
+            ),
           ],
           child: Builder(
             builder: (context) => MaterialApp(
               title: 'Pendientes',
               debugShowCheckedModeBanner: false,
               theme: AppTheme.from(context.palette),
+              // Tope al tamano de letra del sistema: mas alla de 1.3x las
+              // piezas de la interfaz ya no caben y se desbordan.
+              builder: (context, child) => MediaQuery.withClampedTextScaling(
+                maxScaleFactor: 1.3,
+                child: child!,
+              ),
               home: const TasksPage(),
             ),
           ),
@@ -82,10 +93,10 @@ class _LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const p = AppPalettes.nesBlue;
+    const p = AppPalettes.wii;
 
     return Scaffold(
-      backgroundColor: p.panelDark,
+      backgroundColor: p.panel,
       body: Center(
         child: SizedBox(
           width: 22,

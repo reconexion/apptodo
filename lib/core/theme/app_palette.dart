@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
+/// Retro: carcasa con tornillos y LCD. Wii: menu de consola brillante.
+enum UiStyle { retro, wii }
+
 /// Todos los colores del aparato. Cambiar de tema es cambiar de paleta.
 class AppPalette {
   const AppPalette({
+    this.style = UiStyle.retro,
+    this.mascot = const Color(0xFF8CCF4D),
+    this.stripes = const Color(0x00000000),
     required this.id,
     required this.label,
     required this.brightness,
@@ -44,7 +50,19 @@ class AppPalette {
     required this.screwLight,
     required this.screwDark,
     required this.screwSlot,
+    required this.wave,
+    required this.waveSoft,
+    required this.sheen,
+    required this.shadow,
   });
+
+  final UiStyle style;
+
+  /// Estrellita de adorno del contador (solo estilo Wii).
+  final Color mascot;
+
+  /// Rayas horizontales finas del fondo (solo estilo Wii).
+  final Color stripes;
 
   final String id;
   final String label;
@@ -103,10 +121,124 @@ class AppPalette {
   final Color screwLight;
   final Color screwDark;
   final Color screwSlot;
+
+  /// Ondas decorativas del fondo.
+  final Color wave;
+  final Color waveSoft;
+
+  /// Brillo blanco de la mitad superior de botones y tarjetas.
+  final Color sheen;
+
+  /// Sombra suave bajo las piezas.
+  final Color shadow;
 }
 
 class AppPalettes {
   const AppPalettes._();
+
+  /// Igual que Wii pero con ondas verdes de fondo.
+  /// Menu de consola: gris claro con blanco, plata brillante y acento
+  /// azul cielo. Tema por defecto.
+  static const wii = AppPalette(
+    style: UiStyle.wii,
+    mascot: Color(0xFF8DD5FF),
+    stripes: Color.fromRGBO(255, 255, 255, 0.55),
+    id: 'wii',
+    label: 'WII',
+    brightness: Brightness.light,
+    panelLight: Color(0xFFF7F8F9),
+    panel: Color(0xFFE6E9EC),
+    panelDark: Color(0xFFCDD2D7),
+    edge: Color(0xFFC6CCD0),
+    engrave: Color(0xFF5C646C),
+    ink: Color(0xFF383D43),
+    inkDim: Color(0xFF666E76),
+    inkFaint: Color(0xFF9CA3AA),
+    field: Color(0xFFFFFFFF),
+    fieldDeep: Color(0xFFEFF1F2),
+    glassTop: Color(0xFFFCFCFD),
+    glass: Color(0xFFE3E6E9),
+    glassEdge: Color(0xFFC3C9CE),
+    displayInk: Color(0xFF383D43),
+    displayInkSoft: Color(0xFF5A626A),
+    displayTick: Color(0xFF5A626A),
+    glow: Color.fromRGBO(52, 168, 239, 0.45),
+    halo: Color.fromRGBO(52, 168, 239, 0.35),
+    meterTrack: Color(0xFFC4C9CE),
+    meterTrackEdge: Color(0xFFADB3B9),
+    accent: Color(0xFF2FA3EC),
+    accentLight: Color(0xFF8DD5FF),
+    accentDark: Color(0xFF1677BF),
+    onAccent: Color(0xFFFFFFFF),
+    tileTop: Color(0xFFFDFDFE),
+    tileBottom: Color(0xFFE1E4E7),
+    tileDoneTop: Color(0xFFF1F3F4),
+    tileDoneBottom: Color(0xFFDADEE1),
+    ledOffTop: Color(0xFFF4F5F6),
+    ledOffBottom: Color(0xFFC3C8CD),
+    ledOffBorder: Color(0xFFB3B9BF),
+    chipActive: Color(0xFFDDF2FF),
+    chipIdle: Color(0xFFF2F3F4),
+    scanline: Color(0x00000000),
+    danger: Color(0xFFE0533D),
+    screwLight: Color(0xFFF4F5F6),
+    screwDark: Color(0xFFC3C8CD),
+    screwSlot: Color(0xFF9CA3AA),
+    wave: Color(0xFFFFFFFF),
+    waveSoft: Color(0xFFD9DDE1),
+    sheen: Color.fromRGBO(255, 255, 255, 0.85),
+    shadow: Color.fromRGBO(40, 55, 60, 0.20),
+  );
+
+  static const wiiGreen = AppPalette(
+    style: UiStyle.wii,
+    stripes: Color.fromRGBO(255, 255, 255, 0.35),
+    id: 'wii_green',
+    label: 'WII VERDE',
+    brightness: Brightness.light,
+    panelLight: Color(0xFFFBFCFC),
+    panel: Color(0xFFF1F4F3),
+    panelDark: Color(0xFFE3E8E6),
+    edge: Color(0xFFC6CCD0),
+    engrave: Color(0xFF5C646C),
+    ink: Color(0xFF383D43),
+    inkDim: Color(0xFF666E76),
+    inkFaint: Color(0xFF9CA3AA),
+    field: Color(0xFFFFFFFF),
+    fieldDeep: Color(0xFFEFF1F2),
+    glassTop: Color(0xFFFCFCFD),
+    glass: Color(0xFFE3E6E9),
+    glassEdge: Color(0xFFC3C9CE),
+    displayInk: Color(0xFF383D43),
+    displayInkSoft: Color(0xFF5A626A),
+    displayTick: Color(0xFF5A626A),
+    glow: Color.fromRGBO(52, 168, 239, 0.45),
+    halo: Color.fromRGBO(52, 168, 239, 0.35),
+    meterTrack: Color(0xFFC4C9CE),
+    meterTrackEdge: Color(0xFFADB3B9),
+    accent: Color(0xFF2FA3EC),
+    accentLight: Color(0xFF8DD5FF),
+    accentDark: Color(0xFF1677BF),
+    onAccent: Color(0xFFFFFFFF),
+    tileTop: Color(0xFFFDFDFE),
+    tileBottom: Color(0xFFE1E4E7),
+    tileDoneTop: Color(0xFFF1F3F4),
+    tileDoneBottom: Color(0xFFDADEE1),
+    ledOffTop: Color(0xFFF4F5F6),
+    ledOffBottom: Color(0xFFC3C8CD),
+    ledOffBorder: Color(0xFFB3B9BF),
+    chipActive: Color(0xFFDDF2FF),
+    chipIdle: Color(0xFFF2F3F4),
+    scanline: Color(0x00000000),
+    danger: Color(0xFFE0533D),
+    screwLight: Color(0xFFF4F5F6),
+    screwDark: Color(0xFFC3C8CD),
+    screwSlot: Color(0xFF9CA3AA),
+    wave: Color(0xFF8CCF4D),
+    waveSoft: Color(0xFFCBEBA6),
+    sheen: Color.fromRGBO(255, 255, 255, 0.85),
+    shadow: Color.fromRGBO(40, 55, 60, 0.20),
+  );
 
   /// Verde sobre crema, tipo consola de 8 bits. Tema por defecto.
   static const nes = AppPalette(
@@ -151,6 +283,10 @@ class AppPalettes {
     screwLight: Color(0xFFE9E5D2),
     screwDark: Color(0xFFA9A385),
     screwSlot: Color(0xFF7C7660),
+    wave: Color(0xFF7FB335),
+    waveSoft: Color(0xFFC9DB9A),
+    sheen: Color.fromRGBO(255, 255, 255, 0.7),
+    shadow: Color.fromRGBO(60, 70, 30, 0.18),
   );
 
   /// Azul sobre crema, misma familia que NES pero en frio.
@@ -196,6 +332,10 @@ class AppPalettes {
     screwLight: Color(0xFFE3E9EF),
     screwDark: Color(0xFF95A7B9),
     screwSlot: Color(0xFF6C7F92),
+    wave: Color(0xFF4E92C6),
+    waveSoft: Color(0xFFB5D0E6),
+    sheen: Color.fromRGBO(255, 255, 255, 0.7),
+    shadow: Color.fromRGBO(20, 40, 60, 0.18),
   );
 
   /// Ambar sobre negro, tipo consola futurista.
@@ -241,6 +381,10 @@ class AppPalettes {
     screwLight: Color(0xFF6A6A73),
     screwDark: Color(0xFF232329),
     screwSlot: Color(0xFF0C0C0E),
+    wave: Color(0xFFB85F0E),
+    waveSoft: Color(0xFF3A2A18),
+    sheen: Color.fromRGBO(255, 255, 255, 0.06),
+    shadow: Color.fromRGBO(0, 0, 0, 0.5),
   );
 
   /// Carcasa azul noche, saturada y profunda; pantalla y controles en
@@ -287,15 +431,26 @@ class AppPalettes {
     screwLight: Color(0xFF3A6398),
     screwDark: Color(0xFF0F2444),
     screwSlot: Color(0xFF061428),
+    wave: Color(0xFF2C5C9E),
+    waveSoft: Color(0xFF1B3B6B),
+    sheen: Color.fromRGBO(255, 255, 255, 0.08),
+    shadow: Color.fromRGBO(0, 8, 24, 0.5),
   );
 
-  /// NES verde primero: es el tema por defecto.
-  static const all = <AppPalette>[nesBlue, nes, amber, blueAmber];
+  /// El primero es el tema por defecto.
+  static const all = <AppPalette>[
+    wii,
+    wiiGreen,
+    nesBlue,
+    nes,
+    amber,
+    blueAmber,
+  ];
 
   static AppPalette byId(String? id) {
     for (final p in all) {
       if (p.id == id) return p;
     }
-    return nesBlue;
+    return wii;
   }
 }

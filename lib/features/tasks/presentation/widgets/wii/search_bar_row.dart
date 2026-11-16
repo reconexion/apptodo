@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/l10n/app_strings.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../../core/l10n/app_strings.dart';
+import '../../../../../core/theme/app_theme.dart';
+import 'pill_field.dart';
 
-/// Barra de busqueda: ranura hundida con lupa y boton de limpiar.
+/// Barra de busqueda en pastilla, con lupa y boton de limpiar.
 class SearchBarRow extends StatefulWidget {
   const SearchBarRow({
     super.key,
@@ -50,12 +51,12 @@ class _SearchBarRowState extends State<SearchBarRow> {
 
     final textStyle = TextStyle(
       fontFamily: AppFonts.mono,
-      fontSize: 18,
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
       color: c.ink,
     );
 
-    return SizedBox(
-      height: 42,
+    return PillField(
       child: TextField(
         controller: _controller,
         onChanged: widget.onChanged,
@@ -68,33 +69,22 @@ class _SearchBarRowState extends State<SearchBarRow> {
           hintText: t.t('search_placeholder'),
           hintStyle: textStyle.copyWith(color: c.inkFaint),
           isDense: true,
-          filled: true,
-          fillColor: c.fieldDeep,
-          contentPadding: EdgeInsets.zero,
-          prefixIcon: Icon(Icons.search, size: 18, color: c.inkFaint),
-          prefixIconConstraints: const BoxConstraints(
-            minWidth: 38,
-            minHeight: 38,
-          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+          prefixIcon: Icon(Icons.search_rounded, size: 22, color: c.inkFaint),
+          prefixIconConstraints: const BoxConstraints(minWidth: 46),
           suffixIcon: _hasText
               ? GestureDetector(
-            onTap: _clear,
-            behavior: HitTestBehavior.opaque,
-            child: Icon(Icons.close, size: 16, color: c.inkFaint),
-          )
+                  onTap: _clear,
+                  behavior: HitTestBehavior.opaque,
+                  child: Icon(
+                    Icons.cancel_rounded,
+                    size: 20,
+                    color: c.inkFaint,
+                  ),
+                )
               : null,
-          suffixIconConstraints: const BoxConstraints(
-            minWidth: 34,
-            minHeight: 34,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(9),
-            borderSide: BorderSide(color: c.edge),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(9),
-            borderSide: BorderSide(color: c.accentDark),
-          ),
+          suffixIconConstraints: const BoxConstraints(minWidth: 42),
         ),
       ),
     );

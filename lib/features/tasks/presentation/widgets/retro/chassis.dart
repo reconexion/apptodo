@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_palette.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/app_palette.dart';
+import '../../../../../core/theme/app_theme.dart';
 
 /// Carcasa del aparato: degradado, grano de escaneo y tornillos.
 class Chassis extends StatelessWidget {

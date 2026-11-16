@@ -10,10 +10,10 @@ import '../viewmodels/tasks_view_model.dart';
 /// Editor de pestanas ligadas a una tarea. Se abre al mantener presionada.
 /// Cada toque liga o desliga esa pestana de una vez, sin boton de guardar.
 Future<void> showTaskTabsSheet(
-    BuildContext context,
-    TasksViewModel vm,
-    Task task,
-    ) {
+  BuildContext context,
+  TasksViewModel vm,
+  Task task,
+) {
   return showModalBottomSheet<void>(
     context: context,
     backgroundColor: Colors.transparent,
@@ -53,9 +53,9 @@ class TaskTabsSheet extends StatelessWidget {
 
     final label = TextStyle(
       fontFamily: AppFonts.display,
-      fontSize: 9,
+      fontSize: AppFonts.ds(9),
       fontWeight: FontWeight.w800,
-      letterSpacing: 3.2,
+      letterSpacing: AppFonts.track(3.2),
       color: c.engrave,
     );
 
@@ -104,7 +104,8 @@ class TaskTabsSheet extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontFamily: AppFonts.mono,
-                    fontSize: 19,
+                    fontSize: AppFonts.ms(19),
+                    fontWeight: AppFonts.monoWeight,
                     color: c.ink,
                   ),
                 ),
@@ -175,7 +176,8 @@ class _TabOption extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: AppFonts.mono,
-                  fontSize: 19,
+                  fontSize: AppFonts.ms(19),
+                  fontWeight: AppFonts.monoWeight,
                   color: linked ? c.ink : c.inkDim,
                 ),
               ),

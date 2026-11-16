@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/app_theme.dart';
 
 /// Boton fisico: se hunde 3 px y pierde su sombra inferior al presionar.
 class PushButton extends StatefulWidget {
@@ -44,10 +44,7 @@ class _PushButtonState extends State<PushButton> {
             stops: const [0.0, 0.45, 1.0],
           ),
           boxShadow: [
-            BoxShadow(
-              color: c.accentDark,
-              offset: Offset(0, _pressed ? 1 : 4),
-            ),
+            BoxShadow(color: c.accentDark, offset: Offset(0, _pressed ? 1 : 4)),
           ],
         ),
         child: Text(

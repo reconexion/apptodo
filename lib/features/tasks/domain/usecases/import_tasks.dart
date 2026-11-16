@@ -8,7 +8,6 @@ class ImportTasks {
   final TaskRepository _repository;
   final TaskBackupCodec _codec;
 
-
   Future<TaskSnapshot> call(String raw, {required int intoTabId}) {
     final backup = _codec.decode(raw);
     return _repository.mergeBackup(

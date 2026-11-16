@@ -41,8 +41,9 @@ class SharedPrefsTaskLocalDataSource implements TaskLocalDataSource {
     try {
       final list = jsonDecode(raw) as List<dynamic>;
       return list
-          .map((e) =>
-          TaskModel.fromJson(e as Map<String, dynamic>, fallbackTabId))
+          .map(
+            (e) => TaskModel.fromJson(e as Map<String, dynamic>, fallbackTabId),
+          )
           .toList();
     } catch (_) {
       return [];
